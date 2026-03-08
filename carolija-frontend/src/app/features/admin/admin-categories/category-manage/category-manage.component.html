@@ -1,0 +1,43 @@
+<div class="manage-container">
+
+    <div class="header">
+        <h2>{{isEditMode ? 'Uredi Kategoriju' : 'Nova kategorija'}}</h2>
+        <p>Unesite detalje o kategoriji:</p>
+    </div>
+
+    <div class="card">
+
+        <div class="form-group">
+            <label>Naziv kategorije</label>
+            <input type="text" [(ngModel)]="categoryData.name" name="catName">
+        </div>
+
+        <div class="form-group">
+            <label>Slika kategorije</label>
+            <div class="image-upload-wrapper">
+                <img *ngIf="imagePreview" [src]="imagePreview" class="img-preview">
+                
+                <input type="file" (change)="onFileSelected($event)" accept="image/*" #fileInput hidden>
+                <button type="button" class="btn-upload" (click)="fileInput.click()">
+                Odaberi sliku
+                </button>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label>Opis</label>
+            <textarea [(ngModel)]="categoryData.description" name="catDesc"></textarea>
+        </div>  
+
+        <div class="actions">
+            <button class="btn-cancel" type="button" routerLink="/admin/categories">Odustani</button>
+            <button class="btn-save" (click)="onSubmit()">
+                <i class="fas fa-save"></i> Sacuvaj
+            </button>            
+        </div>
+
+    </div>
+
+</div>
+
+

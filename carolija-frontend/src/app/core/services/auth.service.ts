@@ -1,0 +1,78 @@
+import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { Observable, tap } from "rxjs";
+import {jwtDecode} from 'jwt-decode';
+
+@Injectable({
+    providedIn: 'root'
+})
+export class AuthService{
+    private apiUrl = 'http://localhost:7200/api/auth';
+
+    constructor(private http: HttpClient){}
+
+    register(data: any) : Observable<any>{
+        return this.http.post(`${this.apiUrl}/register`, data);
+    }
+
+    login(data: any) : Observable<any>{
+        return this.http.post<any>(`${this.apiUrl}/login`,data).pipe(
+            tap({
+                next: (res) => {
+                    if(res.token){
+                        localStorage.setItem('token', res.token)
+                    }
+                }
+            })
+        )
+    }
+
+    logout(){
+        localStorage.removeItem('token');
+    }
+
+    getToken() : string|null{
+        return localStorage.getItem('token');
+    }
+
+    isLoggedIn() : boolean{
+        return !!this.getToken();
+    }
+
+    getUserEmail():string|null{
+        const token = localStorage.getItem('token');
+
+        if(!token){
+            return null;
+        }
+
+        try{
+            const decoded: any = jwtDecode(token);
+            
+
+            return decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name']
+            || decoded['name']
+            || decoded['sub'];
+        }
+        catch(error){
+            console.error("Greski pri dekodiranju tokena - ", error);
+            return null;
+        }
+    }
+
+    isAdmin():boolean{
+        const token = localStorage.getItem('token');
+        if(!token) return false;
+
+        try{
+            const decoded: any = jwtDecode(token);
+            const role = decoded['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
+            return role === 'Admin';
+
+        }
+        catch(error){
+            return false;
+        }
+
+    }
+}

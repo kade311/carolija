@@ -1,0 +1,9 @@
+<div class="carousel-container" *ngIf="items.length > 0">
+    <div class="carousel-track">
+        <div class="product-card" *ngFor="let item of infiniteItems">
+            <img [src]="item.productImages?.[0]?.imageUrl" alt="{{item.productName}}">
+            <p>{{item.productName}}</p>
+            <strong>{{item.productPrice}}</strong>
+        </div>
+    </div>
+</div>

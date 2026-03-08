@@ -1,0 +1,47 @@
+<div class="shop-container">
+  <div class="filter-bar">
+    <mat-form-field appearance="outline">
+      <mat-label>Kategorija</mat-label>
+      <mat-select [(ngModel)]="filters.categoryId" (selectionChange)="onFilterChange()">
+        <mat-option [value]="null">Sve kategorije</mat-option>
+        <mat-option *ngFor="let cat of categories" [value]="cat.categoryID">
+          {{ cat.categoryName }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Pretraži...</mat-label>
+      <input matInput [(ngModel)]="filters.search" (input)="onFilterChange()">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Min cijena</mat-label>
+      <input matInput type="number" [(ngModel)]="filters.minPrice" (input)="onFilterChange()">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Max cijena</mat-label>
+      <input matInput type="number" [(ngModel)]="filters.maxPrice" (input)="onFilterChange()">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Sortiraj</mat-label>
+      <mat-select [(ngModel)]="filters.sortBy" (selectionChange)="onFilterChange()">
+        <mat-option value="name_asc">Naziv (A-Z)</mat-option>
+        <mat-option value="price_asc">Cijena (Niža)</mat-option>
+        <mat-option value="price_desc">Cijena (Viša)</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="product-grid">
+    <mat-card class="product-card" *ngFor="let p of products">
+      <img mat-card-image [src]="getMainImage(p)" [alt]="p.productName">
+      <mat-card-content>
+        <h3>{{ p.productName }}</h3>
+        <p class="price">{{ p.productPrice }} KM</p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

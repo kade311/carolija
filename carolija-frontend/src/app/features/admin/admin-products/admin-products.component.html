@@ -1,0 +1,88 @@
+<div class="admin-products-container">
+    <div class="admin-header">
+        <div class="header-left">
+            <button class="back-btn" routerLink="/admin/categories">
+                <i class="fas fa-arrow-left"></i> ⬅ Back to categories
+            </button>
+        </div>
+        <h2>Products in category: {{categoryName}}</h2>
+        <button class="add-product-btn" (click)="addProduct()">
+            <span class="plus-icon">+</span> Add New Product
+        </button>
+    </div>
+
+    <div class="search-container">
+        <div class="search-box">
+            <i class="fas fa-search search-icon"></i> <input 
+            type="text" 
+            placeholder="Search products by name..." 
+            (input)="onSearch($event)"
+            >
+        </div>
+    </div>
+
+    <div class="product-list-wrapper">
+        <div class="list-header">
+            <span class="col-img">Image</span>
+            <span class="col-name">Product Name</span>
+            <span class="col-price">Price</span>
+            <span class="col-status">Status</span>
+            <span class="col-actions">Actions</span>
+        </div>
+
+        <div *ngIf="products.length === 0" class="no-data">
+            <p>There are currently no products in this category</p>
+        </div>
+
+        <div *ngFor="let p of products" class="product-row" 
+             [ngClass]="{'deleted-style': !p.available}"
+             (click)="openGallery(p.productId)">
+            <div class="col-img">
+                <img *ngIf="getMainImage(p) as url" [src]="url" alt="Product">
+            </div>
+            <div class="col-name">
+                <strong [style.text-decoration]="!p.available ? 'line-through' : 'none'">{{p.productName}}</strong>
+                <small>{{p.productDescription | slice:0:40}}...</small>
+            </div>
+            <div class="col-price">{{p.productPrice}}</div>
+            <div class="col-status">
+                <span class="badge" [class.active]="p.available" [class.unavailable]="!p.available">
+                    {{p.available ? 'Available': 'Unavailable'}}
+                </span>
+            </div>
+            <div class="col-actions">
+                <button class="edit-btn" (click)="$event.stopPropagation(); editProduct(p.productId)">Edit</button>
+                
+                <button class="delete-btn" *ngIf="p.available" 
+                    (click)="$event.stopPropagation(); openModal(p, 'delete')">Delete</button>
+                
+                <button class="restore-btn" *ngIf="!p.available" 
+                    (click)="$event.stopPropagation(); openModal(p, 'restore')">Restore</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="pagination-controls">
+        <button (click)="prevPage()" [disabled]="currentPage === 1">Previous</button>
+        <span>Page {{currentPage}}</span>
+        <button (click)="nextPage()" [disabled]="products.length < pageSize">Next</button>
+    </div>
+
+    <div class="modal-overlay" *ngIf="showModal">
+        <div class="modal-card">
+            <h3>{{ modalType === 'delete' ? 'Potvrda brisanja' : 'Vraćanje proizvoda' }}</h3>
+            <p>
+                Jeste li sigurni da želite {{ modalType === 'delete' ? 'obrisati' : 'vratiti' }} 
+                proizvod <strong>{{ selectedProductName }}</strong>?
+            </p>
+            
+            <div class="modal-actions">
+                <button class="btn-cancel" (click)="closeModal()">Odustani</button>
+                <button [className]="modalType === 'delete' ? 'btn-confirm' : 'btn-restore-confirm'" 
+                        (click)="productDeleteOrRestore()">
+                    Potvrdi
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

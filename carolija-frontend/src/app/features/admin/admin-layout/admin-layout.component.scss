@@ -1,0 +1,47 @@
+.admin-wrapper {
+  display: flex;
+  min-height: 100vh;
+}
+
+.admin-sidebar {
+  width: 250px;
+  background-color: #2c3e50;
+  color: white;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-sidebar h2 {
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+  text-align: center;
+  border-bottom: 1px solid #34495e;
+  padding-bottom: 15px;
+}
+
+.admin-sidebar nav a {
+  color: #bdc3c7;
+  text-decoration: none;
+  padding: 12px 15px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  display: block;
+  transition: 0.3s;
+}
+
+.admin-sidebar nav a:hover, .admin-sidebar nav a.active {
+  background-color: #34495e;
+  color: white;
+}
+
+.back-home {
+  margin-top: auto; /* Gura dugme na dno */
+  border: 1px dashed #7f8c8d;
+}
+
+.admin-content {
+  flex: 1;
+  background-color: #f4f7f6;
+  padding: 30px;
+}

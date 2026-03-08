@@ -1,0 +1,236 @@
+.navbar {
+  height: 70px;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.navbar-logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-decoration: none;
+  color: #ff4081; // Tvoja prepoznatljiva pink boja
+}
+
+.nav-links {
+  display: flex;
+  align-items: center; // Centriranje elemenata vertikalno
+  list-style: none;
+  gap: 25px;
+  margin: 0;
+  padding: 0;
+
+  li {
+    display: flex;
+    align-items: center;
+  }
+
+  a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    transition: color 0.3s;
+
+    &:hover, &.active-link {
+      color: #ff4081;
+    }
+  }
+}
+
+/* Stilovi za Autentifikaciju */
+.user-info {
+  font-size: 0.9rem;
+  color: #636e72;
+  font-weight: 600;
+  padding-right: 15px;
+  border-right: 1px solid #dfe6e9; // Mala linija razdvajanja
+}
+
+.btn-login {
+  background-color: #ff4081;
+  color: #fff !important; // Da pregazi hover boju
+  padding: 8px 20px;
+  border-radius: 25px;
+  transition: transform 0.2s, opacity 0.2s;
+
+  &:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+  }
+}
+
+.btn-logout {
+  background: none;
+  border: 1px solid #ff4081;
+  color: #ff4081;
+  padding: 7px 18px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: #ff4081;
+    color: #fff;
+  }
+}
+
+/* Hamburger meni (Mobile) */
+.menu-toggle {
+  display: none; // Sakriveno na desktopu
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+
+  span {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background-color: #333;
+    transition: 0.3s;
+  }
+}
+
+/* Odzivnost (Responsive) */
+@media (max-width: 768px) {
+  .menu-toggle {
+    display: flex;
+  }
+
+  .nav-links {
+    position: absolute;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    flex-direction: column;
+    padding: 30px 0;
+    gap: 20px;
+    transform: translateY(-150%);
+    transition: transform 0.3s ease-in-out;
+    box-shadow: 0 10px 10px rgba(0,0,0,0.05);
+
+    &.active {
+      transform: translateY(0);
+    }
+
+    .user-info {
+      border-right: none;
+      padding-right: 0;
+      padding-bottom: 10px;
+    }
+  }
+}
+
+/* Modal Overlay - zatamnjena pozadina */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  backdrop-filter: blur(3px); // Blago zamućenje pozadine
+}
+
+/* Modalna kartica */
+.logout-modal {
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  animation: modalScale 0.3s ease-out;
+
+  h3 {
+    margin: 15px 0 10px;
+    font-size: 1.4rem;
+    color: #333;
+  }
+
+  p {
+    color: #636e72;
+    margin-bottom: 25px;
+  }
+}
+
+.modal-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+
+  button {
+    padding: 10px 25px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-cancel {
+    background: #f1f2f6;
+    border: none;
+    color: #2f3542;
+    &:hover { background: #dfe4ea; }
+  }
+
+  .btn-confirm {
+    background: #ff4081;
+    border: none;
+    color: white;
+    &:hover { opacity: 0.9; }
+  }
+}
+
+/* Animacija za pojavljivanje */
+@keyframes modalScale {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.admin-link {
+  color: #ff4081 !important; // Pink boja
+  font-weight: 700 !important;
+  display: flex;
+  align-items: center;
+  background: rgba(#ff4081, 0.1); // Blaga roze pozadina
+  padding: 5px 12px;
+  border-radius: 8px;
+  margin-right: 10px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba(#ff4081, 0.2);
+    transform: translateY(-1px);
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-link {
+    margin-right: 0;
+    margin-bottom: 10px;
+    justify-content: center;
+    width: 100%;
+  }
+}

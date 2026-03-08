@@ -1,0 +1,114 @@
+.shop-container {
+  padding: 40px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  // Filteri: Koristimo bijelu podlogu sa blagom sjenom umjesto grubog outline-a
+  .filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 40px;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); // Suptilna sjena
+
+    mat-form-field {
+      flex: 1 1 200px;
+      // Uklanjamo grubi izgled, koristimo 'standard' ili 'fill' uz malo modifikacija
+    }
+  }
+
+  // Grid: Kartice su sada prozračne
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 30px;
+  }
+
+  .product-card {
+    border-radius: 20px !important; // Veća zaobljenost
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12) !important;
+    }
+
+    img {
+      height: 240px;
+      object-fit: cover;
+    }
+
+    mat-card-content {
+      padding: 20px !important;
+
+      h3 {
+        font-size: 1.15rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: #333;
+      }
+
+      .price {
+        font-size: 1.3rem;
+        color: #2e7d32; // Tamno zelena (boja prirode/biljaka)
+        font-weight: 700;
+      }
+    }
+  }
+}
+
+// Globalno peglanje Material komponenti (dodaj ovo u styles.scss ako želiš da sve bude ljepše)
+.mat-mdc-form-field-outline-thick {
+  border-width: 1px !important; // Tanji borderi izgledaju skuplje
+}
+.shop-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  .filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 30px;
+    
+    mat-form-field {
+      flex: 1 1 200px;
+      // Osiguravamo da tekst bude čitljiv
+      .mat-mdc-select-value { color: #333 !important; }
+    }
+  }
+
+  .product-grid {
+    display: grid;
+    // 220px osigurava da 4 kartice stanu na standardni desktop ekran
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+  }
+
+  .product-card {
+    // Smanjili smo visinu slike da kartica ne bude prevelika
+    img { height: 180px; object-fit: cover; }
+    
+    mat-card-content {
+      padding: 12px !important;
+      h3 { font-size: 0.95rem; }
+      .price { font-size: 1.1rem; }
+    }
+  }
+}
+
+/* Dodaj u styles.scss */
+.mat-mdc-select-value, 
+.mat-mdc-input-element {
+  color: #333 !important;
+}
+
+.mat-mdc-form-field-label {
+  color: #666 !important;
+}

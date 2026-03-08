@@ -1,0 +1,50 @@
+<div class="admin-container">
+    <div class="header">
+        <h2>Managing categories</h2>
+        <button class="add-btn" [routerLink]="['/admin/categories/manage']">Add New Category</button>
+    </div>
+
+    <div class="category-list">
+        <div *ngFor="let cat of categories" class="category-item" [ngClass]="{'deleted-style': cat.isDeleted}">
+            
+            <div class="cat-info" [routerLink]="['/admin/products', cat.categoryID]" style="cursor: pointer;">
+                <img [src]="cat.imageUrl" alt="">
+                <span [style.text-decoration]="cat.isDeleted ? 'line-through' : 'none'">{{cat.categoryName}}</span>
+            </div>
+
+            <div class="cat-actions">
+                <button class="edit-btn" (click)="$event.stopPropagation(); editCategory(cat.categoryID)">
+                    Edit
+                </button>
+                
+                <button class="delete-btn" *ngIf="!cat.isDeleted" 
+                    (click)="$event.stopPropagation(); openModal(cat, 'delete')">
+                    Delete
+                </button>
+                
+                <button class="restore-btn" *ngIf="cat.isDeleted" 
+                    (click)="$event.stopPropagation(); openModal(cat, 'restore')">
+                    Restore
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" *ngIf="showModal">
+        <div class="modal-card">
+            <h3>{{ modalType === 'delete' ? 'Confirm to delete?' : 'Confirm to restore?' }}</h3>
+            <p>
+                Are you sure you want to {{ modalType === 'delete' ? 'delete' : 'restore' }} 
+                the category <strong>{{ selectedCategoryName }}</strong>?
+            </p>
+            
+            <div class="modal-actions">
+                <button class="btn-cancel" (click)="closeModal()">Cancel</button>
+                <button [className]="modalType === 'delete' ? 'btn-confirm' : 'btn-restore-confirm'" 
+                        (click)="categoryDeleteOrRestore()">
+                    Confirm
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
