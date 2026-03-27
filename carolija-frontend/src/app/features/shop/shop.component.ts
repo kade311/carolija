@@ -1,10 +1,11 @@
-import { Component, OnInit, HostListener, OnDestroy } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { ProductService } from '../../core/services/product.service';
 import { Product } from '../../core/models/product.model';
 import { Subject, Subscription } from 'rxjs';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { debounceTime } from 'rxjs/operators';
 import { CategoryService } from '../../core/services/category.service';
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
@@ -18,10 +19,14 @@ import { MatFormFieldModule } from '@angular/material/form-field';
   templateUrl: './shop.component.html',
   styleUrls: ['./shop.component.scss']
 })
-export class ShopComponent implements OnInit, OnDestroy {
+export class ShopComponent implements OnInit, AfterViewInit, OnDestroy {
   products: Product[] = [];
   loading: boolean = false;
   allLoaded: boolean = false;
+  totalCount = 0;
+  private observer?: IntersectionObserver;
+
+  @ViewChild('scrollAnchor') scrollAnchor?: ElementRef<HTMLDivElement>;
   
   filters = {
     categoryId: null as number | null,
@@ -30,20 +35,29 @@ export class ShopComponent implements OnInit, OnDestroy {
     maxPrice: null as number | null,
     sortBy: 'name_asc',
     pageNumber: 1,
-    pageSize: 12
+    pageSize: 15
   };
 
   private filterSubject = new Subject<void>();
   private subscription: Subscription = new Subscription();
   categories: any[] = [];
 
-  constructor(private productService: ProductService, private categoryService: CategoryService) {}
+  constructor(
+    private productService: ProductService,
+    private categoryService: CategoryService,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
+    const categoryId = this.route.snapshot.queryParamMap.get('categoryId');
+    if (categoryId) {
+      this.filters.categoryId = Number(categoryId);
+    }
+
     this.categoryService.getCategories().subscribe(data => {
       this.categories = data;
     });
-    this.loadProducts(false);
+    this.loadProducts(1, false);
 
     this.subscription = this.filterSubject.pipe(
       debounceTime(400)
@@ -54,22 +68,36 @@ export class ShopComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
+    this.observer?.disconnect();
   }
 
-  loadProducts(isAppending: boolean) {
+  ngAfterViewInit(): void {
+    this.setupScrollObserver();
+  }
+
+  loadProducts(pageNumber: number, isAppending: boolean) {
     if (this.loading) return;
     this.loading = true;
 
-    this.productService.getProducts(this.filters).subscribe({
-      next: (data) => {
+    const requestFilters = {
+      ...this.filters,
+      pageNumber
+    };
+
+    this.productService.getProducts(requestFilters).subscribe({
+      next: (response) => {
+        this.totalCount = response.totalCount;
+        this.filters.pageNumber = response.pageNumber;
+
         if (isAppending) {
-          this.products = [...this.products, ...data];
-          if (data.length < this.filters.pageSize) this.allLoaded = true;
+          this.products = [...this.products, ...response.items];
         } else {
-          this.products = data;
-          this.allLoaded = data.length < this.filters.pageSize;
+          this.products = response.items;
         }
+
+        this.allLoaded = this.products.length >= response.totalCount || response.items.length === 0;
         this.loading = false;
+        this.checkIfMoreProductsShouldBeLoaded();
       },
       error: () => this.loading = false
     });
@@ -78,7 +106,7 @@ export class ShopComponent implements OnInit, OnDestroy {
   resetAndLoad() {
     this.filters.pageNumber = 1;
     this.allLoaded = false;
-    this.loadProducts(false);
+    this.loadProducts(1, false);
   }
 
   onFilterChange() {
@@ -89,15 +117,64 @@ export class ShopComponent implements OnInit, OnDestroy {
     this.filterSubject.next();
   }
 
-  @HostListener('window:scroll', [])
-  onWindowScroll() {
-    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500 && !this.loading && !this.allLoaded) {
-      this.filters.pageNumber++;
-      this.loadProducts(true);
+  private setupScrollObserver() {
+    if (!this.scrollAnchor || typeof IntersectionObserver === 'undefined') {
+      return;
+    }
+
+    this.observer?.disconnect();
+    this.observer = new IntersectionObserver(
+      entries => {
+        if (entries.some(entry => entry.isIntersecting)) {
+          this.loadNextPage();
+        }
+      },
+      {
+        root: null,
+        rootMargin: '0px 0px 150px 0px',
+        threshold: 0.1
+      }
+    );
+
+    this.observer.observe(this.scrollAnchor.nativeElement);
+  }
+
+  private loadNextPage() {
+    if (this.loading || this.allLoaded) {
+      return;
+    }
+
+    this.loadProducts(this.filters.pageNumber + 1, true);
+  }
+
+  private checkIfMoreProductsShouldBeLoaded() {
+    if (this.loading || this.allLoaded || !this.scrollAnchor) {
+      return;
+    }
+
+    const pageHeight = Math.max(
+      document.body.scrollHeight,
+      document.documentElement.scrollHeight
+    );
+
+    if (pageHeight <= window.innerHeight + 50) {
+      queueMicrotask(() => this.loadNextPage());
     }
   }
 
   getMainImage(product: Product): string {
-    return product.productImages?.[0]?.imageUrl || '';
+    return product.productImages?.find(img => img.isMain)?.imageUrl || product.productImages?.[0]?.imageUrl || '';
+  }
+
+  trackByProductId(_index: number, product: Product): number {
+    return product.productId;
+  }
+
+  get totalPages(): number {
+    return Math.max(1, Math.ceil(this.totalCount / this.filters.pageSize));
+  }
+
+  get displayedCount(): number {
+    return this.products.length;
   }
 }

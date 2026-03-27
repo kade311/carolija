@@ -39,8 +39,8 @@
 
         <div class="actions">
             <button type="button" class="cancel-btn" [routerLink]="['/admin/products', categoryId]">Odustani</button>
-            <button type="submit" class="save-btn" [disabled]="!productForm.valid">
-                {{ isEditMode ? 'Sačuvaj izmjene' : 'Kreiraj proizvod' }}
+            <button type="submit" class="save-btn" [disabled]="!productForm.valid || isSubmitting">
+                {{ isEditMode ? 'Sacuvaj izmjene' : 'Kreiraj proizvod' }}
             </button>
         </div>
     </form>

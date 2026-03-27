@@ -43,6 +43,8 @@ Thumbs.db
 
 # --- Dodaci za .NET / Visual Studio ---
 .vs/
+.dotnet/
+.nuget/
 bin/
 obj/
 *.user
@@ -54,3 +56,5 @@ obj/
 # --- Dodaci za Node/NPM ---
 .npm/
 .yarn/
+dist/
+node_modules/

@@ -26,7 +26,8 @@ export class AdminProductsComponent implements OnInit, OnDestroy{
   private searchSubscription?: Subscription;
   currentPage: number = 1;
   pageSize: number = 20;
-
+  totalCount: number = 0;
+  currentSearch = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -47,26 +48,28 @@ export class AdminProductsComponent implements OnInit, OnDestroy{
           debounceTime(300),
           distinctUntilChanged()
         ).subscribe(searchTerm => {
+          this.currentSearch = searchTerm;
           this.loadProducts(searchTerm);
         });
       }
   }
 
   loadProducts(search: string =''){
-    this.productService.getProductsByCategoryId(this.categoryId, search, this.currentPage, this.pageSize).subscribe({
-      next: (data) => {this.products = data},
+    this.currentSearch = search;
+    this.productService.getProductsByCategoryAdmin(this.categoryId, search, this.currentPage, this.pageSize).subscribe({
+      next: (response) => {
+        this.products = response.items;
+        this.totalCount = response.totalCount;
+      },
       error: (err) => console.error('Greska pri ucitavanju proizvoda po kategoriji',err)
     })
   }
 
   addProduct(){
-    console.log('Navigacija na ID:', this.categoryId);
     this.router.navigate(['/admin/product-manage', this.categoryId]);
-
   }
 
   editProduct(id: number){
-  
     this.router.navigate(['/admin/products/edit', id]);
   }
 
@@ -78,8 +81,7 @@ export class AdminProductsComponent implements OnInit, OnDestroy{
     if(!product.productImages || product.productImages.length === 0){
       return null;
     }
-    const mainImage = product.productImages?.find((img:any) => img.isMain) || product.productImages[0];
-
+    const mainImage = product.productImages.find((img:any) => img.isMain) || product.productImages[0];
     return mainImage?.imageUrl || null;
   }
 
@@ -101,14 +103,14 @@ export class AdminProductsComponent implements OnInit, OnDestroy{
 
     if(this.modalType === 'delete'){
       this.productService.deleteProduct(this.selectedProductId).subscribe({
-        next: ()=> {this.loadProducts(); this.closeModal(); },
+        next: ()=> {this.loadProducts(this.currentSearch); this.closeModal(); },
         error: (err) => {console.error(err); this.closeModal(); }
       });
     }
     else{
       this.productService.restoreProduct(this.selectedProductId).subscribe({
         next: () => {
-          this.loadProducts();
+          this.loadProducts(this.currentSearch);
           this.closeModal();
         },
         error: (err) => {console.error(err); this.closeModal(); }
@@ -117,7 +119,7 @@ export class AdminProductsComponent implements OnInit, OnDestroy{
   }
 
   loadCategoryName(){
-    this.categoryService.getCategoryById(this.categoryId).subscribe({
+    this.categoryService.getCategoryAdminById(this.categoryId).subscribe({
       next: (cat) => {
         this.categoryName = cat.categoryName;
       },
@@ -136,14 +138,20 @@ export class AdminProductsComponent implements OnInit, OnDestroy{
   }
 
   nextPage(){
-    this.currentPage++;
-    this.loadProducts();
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.loadProducts(this.currentSearch);
+    }
   }
 
   prevPage(){
     if(this.currentPage > 1){
       this.currentPage--;
-      this.loadProducts();
+      this.loadProducts(this.currentSearch);
     }
+  }
+
+  get totalPages(): number {
+    return Math.max(1, Math.ceil(this.totalCount / this.pageSize));
   }
 }

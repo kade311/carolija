@@ -3,6 +3,5 @@ export interface Category {
   categoryName: string;
   categoryDescription?: string;
   imageUrl?: string;
-  imageDeleteHash? : string;
   isDeleted : boolean;
 }

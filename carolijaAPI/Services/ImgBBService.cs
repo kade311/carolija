@@ -1,20 +1,30 @@
-﻿using System.Net.Http;
-using Newtonsoft.Json;
+using System.Text.Json;
+using carolijaAPI.Models;
 
 namespace carolijaAPI.Services
 {
     public class ImgBBService
     {
         private readonly HttpClient _httpClient;
-        private const string ApiKey = "c4e2c0e06528635c7f32418d26a8d91a";
+        private readonly IConfiguration _configuration;
 
-        public ImgBBService(HttpClient httpClient) {  _httpClient = httpClient; }
-
-        public async Task<(string Url, string DeleteHash)> UploadImageAsync(IFormFile file)
+        public ImgBBService(HttpClient httpClient, IConfiguration configuration)
         {
-            if(file==null || file.Length == 0)
+            _httpClient = httpClient;
+            _configuration = configuration;
+        }
+
+        public async Task<ImgBbUploadResult?> UploadImageAsync(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
             {
-                return (null, null);
+                return null;
+            }
+
+            var apiKey = _configuration["ImgBB:ApiKey"];
+            if (string.IsNullOrWhiteSpace(apiKey))
+            {
+                throw new InvalidOperationException("ImgBB API key is not configured.");
             }
 
             using var content = new MultipartFormDataContent();
@@ -24,29 +34,38 @@ namespace carolijaAPI.Services
 
             content.Add(new ByteArrayContent(fileBytes), "image", file.FileName);
 
-            var response = await _httpClient.PostAsync($"https://api.imgbb.com/1/upload?key={ApiKey}", content);
-
-            if (!response.IsSuccessStatusCode) return (null, null);
+            var response = await _httpClient.PostAsync($"https://api.imgbb.com/1/upload?key={apiKey}", content);
+            if (!response.IsSuccessStatusCode)
+            {
+                return null;
+            }
 
             var jsonResponse = await response.Content.ReadAsStringAsync();
-            var result = JsonConvert.DeserializeObject<ImgBBResponse>(jsonResponse);
+            var result = JsonSerializer.Deserialize<ImgBBResponse>(jsonResponse, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
 
-            string deleteHash = result.Data.Delete_Url;
+            if (result?.Data is null || string.IsNullOrWhiteSpace(result.Data.Url))
+            {
+                return null;
+            }
 
-            return (result.Data.Url, deleteHash);
+            return new ImgBbUploadResult
+            {
+                Url = result.Data.Url
+            };
         }
-
     }
 
     public class ImgBBResponse
     {
-        public ImgBBData Data { get; set; }
+        public ImgBBData? Data { get; set; }
         public bool Success { get; set; }
     }
 
     public class ImgBBData
     {
-        public string Url { get; set; }
-        public string Delete_Url { get; set; }
+        public string Url { get; set; } = string.Empty;
     }
 }

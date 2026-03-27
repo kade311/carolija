@@ -31,7 +31,7 @@
 
         <div class="actions">
             <button class="btn-cancel" type="button" routerLink="/admin/categories">Odustani</button>
-            <button class="btn-save" (click)="onSubmit()">
+            <button class="btn-save" (click)="onSubmit()" [disabled]="isSubmitting">
                 <i class="fas fa-save"></i> Sacuvaj
             </button>            
         </div>
@@ -39,5 +39,3 @@
     </div>
 
 </div>
-
-

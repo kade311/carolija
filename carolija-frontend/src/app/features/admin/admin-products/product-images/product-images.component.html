@@ -1,12 +1,12 @@
 <div class="gallery-container">
   <div class="header-actions">
     <button class="back-btn" (click)="backToProducts()">
-                <i class="fas fa-arror-left"></i> ⬅ Nazad
-            </button>
+      <i class="fas fa-arror-left"></i> Nazad
+    </button>
     <h2>Galerija slika za: {{productName}}</h2>
-    
+
     <input #fileInput type="file" (change)="addImage($event)" style="display: none;" accept="image/*">
-    
+
     <button class="add-new-btn" (click)="fileInput.click()">
       + Dodaj novu sliku
     </button>
@@ -15,34 +15,34 @@
   <hr>
 
   <div class="image-grid" *ngIf="images.length > 0">
-  <div *ngFor="let img of images" class="image-card" [class.is-main]="img.isMain">
-    <div class="img-wrapper">
-      <img [src]="img.imageUrl" alt="Product image">        
-      <div class="actions-overlay">
-        <button class="main-btn" *ngIf="!img.isMain" (click)="$event.stopPropagation(); changeToMain(img.imageID)">⭐</button>
-        <button class="delete-btn" (click)="$event.stopPropagation(); openDeleteWindow(img.imageID)">🗑️</button>
-      </div>        
-    </div>
-    <div class="card-footer" *ngIf="img.isMain">
-      <span class="main-label">Glavna slika</span>
-    </div>
-  </div>
-</div>
-
-<div class="modal-overlay" *ngIf="showDeleteModal">
-    <div class="modal-card">
-      <h3>Potvrda brisanja</h3>
-      <p>Jeste li sigurni da želite trajno obrisati ovu sliku?</p>
-      <div class="modal-actions">
-        <button class="btn-cancel" (click)="closeDeleteWindow()">Odustani</button>
-        <button class="btn-confirm" (click)="deleteImage()">Obriši</button>
+    <div *ngFor="let img of images" class="image-card" [class.is-main]="img.isMain">
+      <div class="img-wrapper">
+        <img [src]="img.imageUrl" alt="Slika proizvoda">
+        <div class="actions-overlay">
+          <button class="main-btn" *ngIf="!img.isMain" (click)="$event.stopPropagation(); changeToMain(img.imageID)">Postavi kao glavnu</button>
+          <button class="delete-btn" (click)="$event.stopPropagation(); openDeleteWindow(img.imageID)">Obrisi</button>
+        </div>
+      </div>
+      <div class="card-footer" *ngIf="img.isMain">
+        <span class="main-label">Glavna slika</span>
       </div>
     </div>
-</div>
+  </div>
+
+  <div class="modal-overlay" *ngIf="showDeleteModal">
+    <div class="modal-card">
+      <h3>Potvrda brisanja</h3>
+      <p>Jeste li sigurni da zelite trajno obrisati ovu sliku?</p>
+      <div class="modal-actions">
+        <button class="btn-cancel" (click)="closeDeleteWindow()">Odustani</button>
+        <button class="btn-confirm" (click)="deleteImage()">Obrisi</button>
+      </div>
+    </div>
+  </div>
 
   <div class="upload-progress-container" *ngIf="isUploading">
     <div class="progress-info">
-      Loading image: {{ uploadProgress }}%
+      Ucitavanje slike: {{ uploadProgress }}%
     </div>
     <div class="progress-bar-bg">
       <div class="progress-bar-fill" [style.width.%]="uploadProgress"></div>
@@ -51,7 +51,7 @@
 
   <div *ngIf="images.length === 0" class="no-images">
     <div class="info-box">
-      <p>There are currently no images related to this product</p>
+      <p>Trenutno nema slika povezanih s ovim proizvodom</p>
     </div>
   </div>
 </div>

@@ -30,6 +30,10 @@ export class CategoryService{
         return this.http.get<Category>(`${this.apiUrl}/${id}`)
     };
 
+    getCategoryAdminById(id:number): Observable<Category>{
+        return this.http.get<Category>(`${this.apiUrl}/admin/${id}`)
+    };
+
     updateCategory(id:number, name: string, description: string, image: File | null) : Observable<Category>{
         const formData = new FormData();
         formData.append('name',name);

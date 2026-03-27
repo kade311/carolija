@@ -17,6 +17,7 @@ export class CategoryManageComponent implements OnInit{
   categoryId: number | null = null;
   selectedFile: File | null = null;
   imagePreview: string | null = null;
+  isSubmitting = false;
 
   categoryData = {
     name:'',
@@ -54,7 +55,6 @@ export class CategoryManageComponent implements OnInit{
     const file = event.target.files[0];
     if(file){
       this.selectedFile = file;
-      console.log('odabrani fajl: ',this.selectedFile?.name)
 
       const reader = new FileReader();
       reader.onload = () => {
@@ -65,6 +65,12 @@ export class CategoryManageComponent implements OnInit{
   }
 
   onSubmit(){
+    if(this.isSubmitting){
+      return;
+    }
+
+    this.isSubmitting = true;
+
     if(this.isEditMode){
       this.categoryService.updateCategory(this.categoryId!, this.categoryData.name, this.categoryData.description, this.selectedFile)
       .subscribe({
@@ -72,10 +78,15 @@ export class CategoryManageComponent implements OnInit{
           this.router.navigate(['/admin/categories']);
         },
         error: (err) => console.error('Greska: ',err)
+      }).add(() => {
+        this.isSubmitting = false;
       });
     }else{
       this.categoryService.addCategory(this.categoryData.name,this.categoryData.description, this.selectedFile)
       .subscribe(() => this.router.navigate(['/admin/categories']))
+      .add(() => {
+        this.isSubmitting = false;
+      });
     }
   }
 }

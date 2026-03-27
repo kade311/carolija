@@ -2,7 +2,7 @@ import { CanActivateFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 
-export const adminGuard: CanActivateFn = (route, state) => {
+export const adminGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
@@ -10,9 +10,9 @@ export const adminGuard: CanActivateFn = (route, state) => {
     return true;
   }
 
-  alert('Nemate ovastenje za pristup ovoj stranici');
-  router.navigate(['']);
-  return false;
+  if (authService.isLoggedIn()) {
+    return router.createUrlTree(['/']);
+  }
 
-
+  return router.createUrlTree(['/login']);
 };

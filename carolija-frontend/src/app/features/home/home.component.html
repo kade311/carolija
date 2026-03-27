@@ -1,16 +1,18 @@
 <div class="homepage-container">
     
-    <!-- latest products karusel -->
     <section class="carousel-section">
         <h2 class="section-title">Novo u ponudi</h2>
         <app-carousel [items]="latestAddedProducts"></app-carousel>
     </section>
 
-    <!-- sve kategorije -->
     <section class="categories-section">
         <h2 class="section-title">Kategorije</h2>
         <div class="category-grid">
-            <div *ngFor="let cat of categories" class="category-card" [routerLink]="['/category', cat.categoryID]">
+            <div
+                *ngFor="let cat of categories"
+                class="category-card"
+                [routerLink]="['/shop']"
+                [queryParams]="{ categoryId: cat.categoryID }">
                 <div class="category-image-wrapper">
                     <img [src]="cat.imageUrl" [alt]="cat.categoryName">
                 </div>

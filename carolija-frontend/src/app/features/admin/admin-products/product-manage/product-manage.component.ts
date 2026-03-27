@@ -15,6 +15,7 @@ export class ProductManageComponent implements OnInit{
   categoryId!: number;
   isEditMode= false;
   productId: number | null = null;
+  isSubmitting = false;
   productData = {
     name: '',
     description: '',
@@ -53,6 +54,12 @@ export class ProductManageComponent implements OnInit{
   }
 
   onSubmit(){
+    if(this.isSubmitting){
+      return;
+    }
+
+    this.isSubmitting = true;
+
     if(this.isEditMode){
       this.productService.updateProduct(this.productId!, this.productData.name, this.productData.description,Number(this.productData.price))
       .subscribe({
@@ -60,14 +67,19 @@ export class ProductManageComponent implements OnInit{
           this.router.navigate(['/admin/products',this.categoryId]);
         },
         error: (err) => console.error('Greska:', err)
-      })
+      }).add(() => {
+        this.isSubmitting = false;
+      });
     }else{
       this.productService.addProduct(
       this.productData.name,
       this.productData.description,
       Number(this.productData.price),
       this.categoryId
-    ).subscribe(() => this.router.navigate(['/admin/products', this.categoryId]));
+    ).subscribe(() => this.router.navigate(['/admin/products', this.categoryId]))
+    .add(() => {
+      this.isSubmitting = false;
+    });
     }
   }
 
@@ -81,5 +93,4 @@ export class ProductManageComponent implements OnInit{
       }
     )
   }
-
 }

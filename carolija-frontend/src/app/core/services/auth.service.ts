@@ -36,7 +36,17 @@ export class AuthService{
     }
 
     isLoggedIn() : boolean{
-        return !!this.getToken();
+        const token = this.getToken();
+        if(!token){
+            return false;
+        }
+
+        if(this.isTokenExpired(token)){
+            this.logout();
+            return false;
+        }
+
+        return true;
     }
 
     getUserEmail():string|null{
@@ -48,31 +58,43 @@ export class AuthService{
 
         try{
             const decoded: any = jwtDecode(token);
-            
-
             return decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name']
             || decoded['name']
             || decoded['sub'];
         }
         catch(error){
-            console.error("Greski pri dekodiranju tokena - ", error);
+            console.error("Greska pri dekodiranju tokena - ", error);
             return null;
         }
     }
 
     isAdmin():boolean{
         const token = localStorage.getItem('token');
-        if(!token) return false;
+        if(!token || this.isTokenExpired(token)) return false;
 
         try{
             const decoded: any = jwtDecode(token);
             const role = decoded['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
             return role === 'Admin';
-
         }
         catch(error){
             return false;
         }
+    }
 
+    isTokenExpired(token: string): boolean{
+        try{
+            const decoded: any = jwtDecode(token);
+            const exp = decoded?.exp;
+
+            if(!exp){
+                return true;
+            }
+
+            return Date.now() >= exp * 1000;
+        }
+        catch{
+            return true;
+        }
     }
 }
