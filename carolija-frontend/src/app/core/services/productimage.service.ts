@@ -2,12 +2,13 @@ import { Injectable } from "@angular/core";
 import { HttpClient, HttpEvent } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { ProductImage } from "../models/productimage.model";
+import { apiBaseUrl } from '../config/api-config';
 
 @Injectable({
     providedIn: 'root'
 })
 export class ProductImageService{
-    private apiUrl = 'http://localhost:7200/api/productimages';
+    private apiUrl = `${apiBaseUrl}/api/productimages`;
 
     constructor(private http: HttpClient){}
 
