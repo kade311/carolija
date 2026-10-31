@@ -18,6 +18,9 @@
       flex: 1 1 200px;
       // Uklanjamo grubi izgled, koristimo 'standard' ili 'fill' uz malo modifikacija
     }
+
+    .quick-filter { display: flex; align-items: center; gap: 8px; padding: 0 8px; white-space: nowrap; color: #333; }
+    .quick-filter input { accent-color: #ff4081; }
   }
 
   // Grid: Kartice su sada prozračne
@@ -28,6 +31,7 @@
   }
 
   .product-card {
+    cursor: pointer;
     border-radius: 20px !important; // Veća zaobljenost
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
     overflow: hidden;
@@ -101,6 +105,8 @@
       .price { font-size: 1.1rem; }
     }
   }
+  .plant-badges { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+  .plant-badges span { padding: 4px 7px; border-radius: 999px; background: #fff1f6; color: #8f1748; font-size: .72rem; }
 }
 
 /* Dodaj u styles.scss */

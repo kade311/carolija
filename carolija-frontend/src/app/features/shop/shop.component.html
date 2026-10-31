@@ -1,5 +1,27 @@
 <div class="shop-container">
   <div class="filter-bar">
+    <label class="quick-filter">
+      <input type="checkbox" [(ngModel)]="filters.petFriendly" (change)="onFilterChange()">
+      Pet-friendly
+    </label>
+    <mat-form-field appearance="outline">
+      <mat-label>Svjetlost</mat-label>
+      <mat-select [(ngModel)]="filters.lightRequirement" (selectionChange)="onFilterChange()">
+        <mat-option value="">Sve</mat-option>
+        <mat-option value="Direct">Direktno svjetlo</mat-option>
+        <mat-option value="Indirect">Indirektno svjetlo</mat-option>
+        <mat-option value="Low">Slabo svjetlo</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Zalijevanje</mat-label>
+      <mat-select [(ngModel)]="filters.wateringRequirement" (selectionChange)="onFilterChange()">
+        <mat-option value="">Svi uslovi</mat-option>
+        <mat-option value="Low">Rijetko</mat-option>
+        <mat-option value="Moderate">Umjereno</mat-option>
+        <mat-option value="High">Često</mat-option>
+      </mat-select>
+    </mat-form-field>
     <mat-form-field appearance="outline">
       <mat-label>Kategorija</mat-label>
       <mat-select [(ngModel)]="filters.categoryId" (selectionChange)="onFilterChange()">
@@ -41,9 +63,14 @@
       <mat-card-content>
         <h3>{{ p.productName }}</h3>
         <p class="price">{{ p.productPrice }} KM</p>
-        <span class="availability" [class.unavailable]="!p.available">
-          {{ p.available ? 'Dostupno' : 'Nedostupno' }}
+        <span class="availability" [class.unavailable]="!p.available || isSoldOut(p)">
+          {{ p.available && !isSoldOut(p) ? 'Dostupno' : 'Rasprodano' }}
         </span>
+        <div class="plant-badges">
+          <span *ngIf="p.isPetFriendly">🐾 Pet-friendly</span>
+          <span>☀ {{ p.lightRequirement }}</span>
+          <span>💧 {{ p.wateringRequirement }}</span>
+        </div>
       </mat-card-content>
     </mat-card>
   </div>

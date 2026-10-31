@@ -79,6 +79,10 @@ export class ProductDetailsComponent implements OnInit {
     this.selectedImage = image.imageUrl;
   }
 
+  isSoldOut(): boolean {
+    return this.product?.stockQuantity === 0;
+  }
+
   addToCart(): void {
     if (!this.product || !this.authService.isLoggedIn()) {
       this.actionMessage = 'Prijavite se kako biste dodali proizvod u košaricu.';

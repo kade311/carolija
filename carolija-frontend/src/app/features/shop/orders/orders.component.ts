@@ -20,4 +20,9 @@ export class OrdersComponent implements OnInit {
     if (this.route.snapshot.queryParamMap.get('created')) this.createdMessage = 'Narudžba je uspješno kreirana.';
     this.ordersService.getMine().subscribe({ next: orders => this.orders = orders });
   }
+
+  cancel(order: any): void {
+    if (order.status !== 'Pending') return;
+    this.ordersService.cancel(order.orderId).subscribe(() => order.status = 'Canceled');
+  }
 }

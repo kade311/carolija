@@ -3,3 +3,7 @@
 .stats article { display: grid; gap: 10px; padding: 22px; background: white; border-radius: 14px; box-shadow: 0 6px 20px rgba(0,0,0,.06); }
 .stats span { color: #666; }
 .stats strong { font-size: 2rem; color: #ff4081; }
+.critical-stock { margin-top: 28px; padding: 22px; background: white; border-radius: 14px; box-shadow: 0 6px 20px rgba(0,0,0,.06); }
+.critical-stock h2 { margin-top: 0; }
+.stock-row { display: flex; justify-content: space-between; gap: 20px; padding: 12px 0; border-bottom: 1px solid #eee; }
+.stock-row strong { color: #b42318; }

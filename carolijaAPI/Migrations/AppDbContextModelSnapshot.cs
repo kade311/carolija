@@ -425,6 +425,13 @@ namespace carolijaAPI.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<bool>("IsPetFriendly")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("LightRequirement")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("ProductDescription")
                         .HasColumnType("text");
 
@@ -435,6 +442,10 @@ namespace carolijaAPI.Migrations
                     b.Property<decimal>("ProductPrice")
                         .HasPrecision(18, 2)
                         .HasColumnType("numeric(18,2)");
+
+                    b.Property<string>("WateringRequirement")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasKey("ProductId");
 
@@ -465,6 +476,31 @@ namespace carolijaAPI.Migrations
                     b.HasIndex("ProductID");
 
                     b.ToTable("ProductImages");
+                });
+
+            modelBuilder.Entity("carolijaAPI.Models.UserProfile", b =>
+                {
+                    b.Property<string>("UserID")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.HasKey("UserID");
+
+                    b.ToTable("UserProfiles");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -570,7 +606,7 @@ namespace carolijaAPI.Migrations
             modelBuilder.Entity("carolijaAPI.Models.Inventory", b =>
                 {
                     b.HasOne("carolijaAPI.Models.Product", "Product")
-                        .WithMany()
+                        .WithMany("Inventories")
                         .HasForeignKey("ProductID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -630,6 +666,17 @@ namespace carolijaAPI.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("carolijaAPI.Models.UserProfile", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("carolijaAPI.Models.Cart", b =>
                 {
                     b.Navigation("CartItems");
@@ -647,6 +694,8 @@ namespace carolijaAPI.Migrations
 
             modelBuilder.Entity("carolijaAPI.Models.Product", b =>
                 {
+                    b.Navigation("Inventories");
+
                     b.Navigation("ProductImages");
                 });
 #pragma warning restore 612, 618

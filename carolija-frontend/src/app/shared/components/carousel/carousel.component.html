@@ -1,9 +1,18 @@
 <div class="carousel-container" *ngIf="items.length > 0">
-    <div class="carousel-track">
-        <a class="product-card" *ngFor="let item of infiniteItems" [routerLink]="['/products', item.productId]">
-            <img [src]="item.productImages?.[0]?.imageUrl" alt="{{item.productName}}">
-            <p>{{item.productName}}</p>
-            <strong>{{item.productPrice}}</strong>
-        </a>
+    <div class="carousel-header">
+        <div><span class="carousel-eyebrow">Svježe iz ponude</span><h3>Biljke koje će uljepšati vaš prostor</h3></div>
+        <div class="carousel-actions">
+            <button type="button" aria-label="Prethodni proizvodi" (click)="scroll(-1)">←</button>
+            <button type="button" aria-label="Sljedeći proizvodi" (click)="scroll(1)">→</button>
+        </div>
+    </div>
+    <div class="carousel-track" #track>
+        <button type="button" class="product-card" *ngFor="let item of items" (click)="openProduct(item)">
+            <span class="image-wrap">
+                <img [src]="item.productImages?.[0]?.imageUrl" [alt]="item.productName">
+                <span class="new-badge">Novo</span>
+            </span>
+            <span class="product-content"><strong>{{item.productName}}</strong><span>{{item.productPrice | number:'1.2-2'}} KM</span></span>
+        </button>
     </div>
 </div>

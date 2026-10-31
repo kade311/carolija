@@ -1,0 +1,12 @@
+.admin-orders { padding: 28px; }
+.page-header { display: flex; justify-content: space-between; align-items: end; gap: 20px; margin-bottom: 24px; }
+.eyebrow { color: #ff4081; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; }
+h1 { margin: 8px 0 0; }
+label { display: grid; gap: 6px; color: #666; font-weight: 600; }
+select { padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; background: white; }
+.orders-table { display: grid; gap: 10px; }
+.order-row { display: grid; grid-template-columns: .7fr 1.2fr 1.2fr 1.4fr .8fr 1fr; gap: 14px; align-items: center; padding: 18px; border-radius: 14px; background: white; box-shadow: 0 5px 18px rgba(0,0,0,.06); }
+.order-row > div, .order-row ul { display: grid; gap: 4px; }
+.order-row small { color: #777; }
+.order-heading { color: #777; font-size: .82rem; font-weight: 700; box-shadow: none; background: transparent; }
+@media (max-width: 900px) { .page-header { align-items: start; flex-direction: column; } .order-heading { display: none; } .order-row { grid-template-columns: repeat(2, 1fr); } }

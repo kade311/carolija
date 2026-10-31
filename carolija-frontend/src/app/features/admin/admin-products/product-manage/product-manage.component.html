@@ -4,6 +4,29 @@
         <p *ngIf="!isEditMode">Kategorija ID: <strong>{{ categoryId }}</strong></p>
     </div>
 
+    <div class="form-group">
+        <label for="lightRequirement">Svjetlost</label>
+        <select id="lightRequirement" name="lightRequirement" [(ngModel)]="productData.lightRequirement">
+            <option value="Direct">Direktno svjetlo</option>
+            <option value="Indirect">Indirektno svjetlo</option>
+            <option value="Low">Slabo svjetlo</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="wateringRequirement">Zalijevanje</label>
+        <select id="wateringRequirement" name="wateringRequirement" [(ngModel)]="productData.wateringRequirement">
+            <option value="Low">Rijetko</option>
+            <option value="Moderate">Umjereno</option>
+            <option value="High">Često</option>
+        </select>
+    </div>
+
+    <label class="pet-friendly">
+        <input type="checkbox" name="isPetFriendly" [(ngModel)]="productData.isPetFriendly">
+        Pet-friendly biljka
+    </label>
+
     <form (ngSubmit)="onSubmit()" #productForm="ngForm" class="styled-form">
         <div class="form-group">
             <label for="name">Naziv proizvoda</label>

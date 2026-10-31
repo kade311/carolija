@@ -8,6 +8,10 @@ export interface Product {
     productDescription?: string;
     productPrice: number;
     available: boolean;
+    lightRequirement: string;
+    wateringRequirement: string;
+    isPetFriendly: boolean;
+    stockQuantity: number;
     createdAt: string;
     category?: Category;
     productImages?: ProductImage[];

@@ -19,7 +19,10 @@ export class ProductManageComponent implements OnInit{
   productData = {
     name: '',
     description: '',
-    price: ''
+    price: '',
+    lightRequirement: 'Indirect',
+    wateringRequirement: 'Moderate',
+    isPetFriendly: false
   };
 
   constructor(
@@ -61,7 +64,7 @@ export class ProductManageComponent implements OnInit{
     this.isSubmitting = true;
 
     if(this.isEditMode){
-      this.productService.updateProduct(this.productId!, this.productData.name, this.productData.description,Number(this.productData.price))
+      this.productService.updateProduct(this.productId!, this.productData.name, this.productData.description, Number(this.productData.price), this.productData.lightRequirement, this.productData.wateringRequirement, this.productData.isPetFriendly)
       .subscribe({
         next: () => {
           this.router.navigate(['/admin/products',this.categoryId]);
@@ -75,7 +78,10 @@ export class ProductManageComponent implements OnInit{
       this.productData.name,
       this.productData.description,
       Number(this.productData.price),
-      this.categoryId
+      this.categoryId,
+      this.productData.lightRequirement,
+      this.productData.wateringRequirement,
+      this.productData.isPetFriendly
     ).subscribe(() => this.router.navigate(['/admin/products', this.categoryId]))
     .add(() => {
       this.isSubmitting = false;
@@ -90,6 +96,9 @@ export class ProductManageComponent implements OnInit{
         this.productData.description = data.productDescription || '';
         this.productData.price = data.productPrice.toString();
         this.categoryId = data.categoryID;
+        this.productData.lightRequirement = data.lightRequirement || 'Indirect';
+        this.productData.wateringRequirement = data.wateringRequirement || 'Moderate';
+        this.productData.isPetFriendly = data.isPetFriendly;
       }
     )
   }

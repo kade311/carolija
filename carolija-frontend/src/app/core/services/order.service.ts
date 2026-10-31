@@ -17,4 +17,15 @@ export class OrderService {
     return this.http.post<{ orderId: number; totalAmount: number }>(this.apiUrl, request);
   }
   getMine(): Observable<any[]> { return this.http.get<any[]>(this.apiUrl); }
+  cancel(id: number): Observable<{ orderId: number; status: string }> {
+    return this.http.post<{ orderId: number; status: string }>(`${this.apiUrl}/${id}/cancel`, {});
+  }
+  getAdmin(status = ''): Observable<any[]> {
+    const url = status ? `${this.apiUrl}/admin?status=${encodeURIComponent(status)}` : `${this.apiUrl}/admin`;
+    return this.http.get<any[]>(url);
+  }
+  updateStatus(id: number, status: string): Observable<{ orderId: number; status: string }> {
+    return this.http.put<{ orderId: number; status: string }>(`${this.apiUrl}/${id}/status`, { status });
+  }
+  getSummary(): Observable<any> { return this.http.get<any>(`${this.apiUrl}/admin/summary`); }
 }

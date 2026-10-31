@@ -1,0 +1,8 @@
+.profile-page { max-width: 650px; margin: auto; padding: 40px 20px; }
+.back-link { color: #555; text-decoration: none; }
+.profile-card { display: grid; gap: 10px; margin-top: 24px; padding: 28px; border-radius: 16px; background: white; box-shadow: 0 8px 25px rgba(0,0,0,.07); }
+label { display: grid; gap: 6px; margin-top: 12px; font-weight: 600; }
+input, textarea { padding: 12px; border: 1px solid #ddd; border-radius: 8px; font: inherit; }
+small, .error { color: #b42318; }
+.success { color: #2e7d32; font-weight: 600; }
+button { padding: 13px; border: 0; border-radius: 8px; color: white; background: #ff4081; cursor: pointer; font-weight: 700; }

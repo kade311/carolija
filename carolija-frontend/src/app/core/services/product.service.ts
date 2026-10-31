@@ -21,6 +21,9 @@ export class ProductService{
         if(filters.minPrice) params = params.set('minPrice', filters.minPrice.toString());
         if(filters.maxPrice) params = params.set('maxPrice', filters.maxPrice.toString());
         if(filters.sortBy) params = params.set('sortBy', filters.sortBy);
+        if(filters.petFriendly) params = params.set('petFriendly', 'true');
+        if(filters.lightRequirement) params = params.set('lightRequirement', filters.lightRequirement);
+        if(filters.wateringRequirement) params = params.set('wateringRequirement', filters.wateringRequirement);
 
         params = params.set('pageNumber', filters.pageNumber.toString());
         params = params.set('pageSize', filters.pageSize.toString());
@@ -56,12 +59,15 @@ export class ProductService{
         return this.http.put<Product>(`${this.apiUrl}/restore/${id}`, {})
     }
 
-    addProduct(name: string, description: string, price: number, categoryId: number) : Observable<Product>{
+    addProduct(name: string, description: string, price: number, categoryId: number, lightRequirement = 'Indirect', wateringRequirement = 'Moderate', isPetFriendly = false) : Observable<Product>{
         const formData = new FormData();
         formData.append('name', name);
         formData.append('description', description);
         formData.append('price', price.toString());
         formData.append('categoryId', categoryId.toString());
+        formData.append('lightRequirement', lightRequirement);
+        formData.append('wateringRequirement', wateringRequirement);
+        formData.append('isPetFriendly', isPetFriendly.toString());
 
         return this.http.post<Product>(this.apiUrl, formData);
     }
@@ -70,11 +76,14 @@ export class ProductService{
         return this.http.get<Product>(`${this.apiUrl}/${id}`)
     };
 
-    updateProduct(id: number, name: string, description: string, price: number) : Observable<Product>{
+    updateProduct(id: number, name: string, description: string, price: number, lightRequirement = 'Indirect', wateringRequirement = 'Moderate', isPetFriendly = false) : Observable<Product>{
         const formData = new FormData();
         formData.append('name', name);
         formData.append('description', description);
         formData.append('price', price.toString());
+        formData.append('lightRequirement', lightRequirement);
+        formData.append('wateringRequirement', wateringRequirement);
+        formData.append('isPetFriendly', isPetFriendly.toString());
         return this.http.put<Product>(`${this.apiUrl}/${id}`, formData);
     }
 }

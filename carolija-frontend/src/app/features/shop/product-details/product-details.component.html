@@ -22,10 +22,15 @@
       <span class="eyebrow">Detalji proizvoda</span>
       <h1>{{ product.productName }}</h1>
       <p class="price">{{ product.productPrice | number:'1.2-2' }} KM</p>
-      <span class="availability" [class.unavailable]="!product.available">
-        {{ product.available ? 'Dostupno' : 'Trenutno nedostupno' }}
+      <span class="availability" [class.unavailable]="!product.available || isSoldOut()">
+        {{ product.available && !isSoldOut() ? 'Dostupno' : 'Rasprodano' }}
       </span>
-      <div class="purchase" *ngIf="product.available">
+      <div class="plant-badges">
+        <span>☀ {{ product.lightRequirement }}</span>
+        <span>💧 {{ product.wateringRequirement }}</span>
+        <span *ngIf="product.isPetFriendly">🐾 Pet-friendly</span>
+      </div>
+      <div class="purchase" *ngIf="product.available && !isSoldOut()">
         <label>Količina <input type="number" min="1" max="100" [(ngModel)]="quantity"></label>
         <button type="button" class="primary-button" (click)="addToCart()">Dodaj u košaricu</button>
         <button type="button" class="favorite-button" (click)="toggleFavorite()">

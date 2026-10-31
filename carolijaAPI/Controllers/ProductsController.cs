@@ -23,6 +23,9 @@ namespace carolijaAPI.Controllers
             [FromQuery] decimal? minPrice = null,
             [FromQuery] decimal? maxPrice = null,
             [FromQuery] string? sortBy = null,
+            [FromQuery] bool? petFriendly = null,
+            [FromQuery] string? lightRequirement = null,
+            [FromQuery] string? wateringRequirement = null,
             [FromQuery] int pageNumber = 1,
             [FromQuery] int pageSize = 20)
         {
@@ -30,7 +33,7 @@ namespace carolijaAPI.Controllers
             pageSize = Math.Clamp(pageSize, 1, 50);
 
             var query = BuildPublicProductsQuery();
-            query = ApplyProductFilters(query, categoryId, search, minPrice, maxPrice);
+            query = ApplyProductFilters(query, categoryId, search, minPrice, maxPrice, petFriendly, lightRequirement, wateringRequirement);
             query = ApplySorting(query, sortBy);
 
             var totalCount = await query.CountAsync();
@@ -98,6 +101,7 @@ namespace carolijaAPI.Controllers
             var query = _context.Products
                 .Include(p => p.Category)
                 .Include(p => p.ProductImages)
+                .Include(p => p.Inventories)
                 .Where(p => p.CategoryID == categoryId);
 
             if (!string.IsNullOrWhiteSpace(search))
@@ -173,6 +177,9 @@ namespace carolijaAPI.Controllers
                 ProductDescription = request.Description?.Trim(),
                 ProductPrice = request.Price,
                 CategoryID = request.CategoryId,
+                LightRequirement = request.LightRequirement.Trim(),
+                WateringRequirement = request.WateringRequirement.Trim(),
+                IsPetFriendly = request.IsPetFriendly,
                 CreatedAt = DateTime.UtcNow,
                 Available = true,
                 ProductImages = new List<ProductImage>()
@@ -202,6 +209,9 @@ namespace carolijaAPI.Controllers
             product.ProductName = request.Name.Trim();
             product.ProductDescription = request.Description?.Trim();
             product.ProductPrice = request.Price;
+            product.LightRequirement = request.LightRequirement.Trim();
+            product.WateringRequirement = request.WateringRequirement.Trim();
+            product.IsPetFriendly = request.IsPetFriendly;
 
             await _context.SaveChangesAsync();
             return Ok(product);
@@ -250,6 +260,7 @@ namespace carolijaAPI.Controllers
             return _context.Products
                 .Include(p => p.Category)
                 .Include(p => p.ProductImages)
+                .Include(p => p.Inventories)
                 .Where(p => p.Available && !p.Category.IsDeleted);
         }
 
@@ -258,7 +269,10 @@ namespace carolijaAPI.Controllers
             int? categoryId,
             string? search,
             decimal? minPrice,
-            decimal? maxPrice)
+            decimal? maxPrice,
+            bool? petFriendly,
+            string? lightRequirement,
+            string? wateringRequirement)
         {
             if (categoryId.HasValue)
             {
@@ -282,6 +296,21 @@ namespace carolijaAPI.Controllers
             if (maxPrice.HasValue)
             {
                 query = query.Where(p => p.ProductPrice <= maxPrice.Value);
+            }
+
+            if (petFriendly == true)
+            {
+                query = query.Where(p => p.IsPetFriendly);
+            }
+
+            if (!string.IsNullOrWhiteSpace(lightRequirement))
+            {
+                query = query.Where(p => p.LightRequirement == lightRequirement);
+            }
+
+            if (!string.IsNullOrWhiteSpace(wateringRequirement))
+            {
+                query = query.Where(p => p.WateringRequirement == wateringRequirement);
             }
 
             return query;
@@ -309,6 +338,10 @@ namespace carolijaAPI.Controllers
                 ProductDescription = p.ProductDescription,
                 ProductPrice = p.ProductPrice,
                 Available = p.Available,
+                LightRequirement = string.IsNullOrWhiteSpace(p.LightRequirement) ? "Indirect" : p.LightRequirement,
+                WateringRequirement = string.IsNullOrWhiteSpace(p.WateringRequirement) ? "Moderate" : p.WateringRequirement,
+                IsPetFriendly = p.IsPetFriendly,
+                StockQuantity = p.Inventories.FirstOrDefault()?.StockQuantity ?? 999,
                 CreatedAt = p.CreatedAt,
                 ProductImages = p.ProductImages
                     .OrderByDescending(img => img.isMain)

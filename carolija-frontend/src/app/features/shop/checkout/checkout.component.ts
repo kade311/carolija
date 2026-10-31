@@ -4,6 +4,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { CartService } from '../../../core/services/cart.service';
 import { OrderService } from '../../../core/services/order.service';
+import { ProfileService } from '../../../core/services/profile.service';
 
 @Component({
   selector: 'app-checkout',
@@ -17,7 +18,7 @@ export class CheckoutComponent implements OnInit {
   total = 0;
   errorMessage = '';
   submitting = false;
-  constructor(private fb: FormBuilder, private cartService: CartService, private orderService: OrderService, private router: Router) {
+  constructor(private fb: FormBuilder, private cartService: CartService, private orderService: OrderService, private profileService: ProfileService, private router: Router) {
     this.form = this.fb.group({
       customerName: ['', [Validators.required, Validators.maxLength(150)]],
       address: ['', [Validators.required, Validators.maxLength(250)]],
@@ -26,6 +27,11 @@ export class CheckoutComponent implements OnInit {
   }
   ngOnInit(): void {
     this.cartService.getCart().subscribe({ next: cart => this.total = cart.total, error: () => this.router.navigate(['/cart']) });
+    this.profileService.get().subscribe(profile => this.form.patchValue({
+      customerName: profile.fullName,
+      address: profile.address,
+      phone: profile.phone
+    }));
   }
   submit(): void {
     if (this.form.invalid || this.submitting) { this.form.markAllAsTouched(); return; }

@@ -1,0 +1,15 @@
+<main class="profile-page">
+  <a routerLink="/" class="back-link">← Početna</a>
+  <h1>Moj profil</h1>
+  <form [formGroup]="form" (ngSubmit)="save()" class="profile-card">
+    <label>Ime i prezime <input formControlName="fullName"></label>
+    <small *ngIf="form.controls.fullName.touched && form.controls.fullName.invalid">Unesite ime i prezime.</small>
+    <label>Adresa <textarea formControlName="address" rows="3"></textarea></label>
+    <small *ngIf="form.controls.address.touched && form.controls.address.invalid">Unesite adresu.</small>
+    <label>Telefon <input formControlName="phone" type="tel"></label>
+    <small *ngIf="form.controls.phone.touched && form.controls.phone.invalid">Unesite telefon.</small>
+    <p class="success" *ngIf="message">{{ message }}</p>
+    <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+    <button type="submit" [disabled]="saving">{{ saving ? 'Spremanje...' : 'Sačuvaj podatke' }}</button>
+  </form>
+</main>

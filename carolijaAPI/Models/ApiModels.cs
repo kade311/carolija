@@ -26,6 +26,10 @@ namespace carolijaAPI.Models
 
         [Range(1, int.MaxValue)]
         public int CategoryId { get; set; }
+
+        public string LightRequirement { get; set; } = "Indirect";
+        public string WateringRequirement { get; set; } = "Moderate";
+        public bool IsPetFriendly { get; set; }
     }
 
     public class UpdateProductRequest
@@ -39,6 +43,10 @@ namespace carolijaAPI.Models
 
         [Range(typeof(decimal), "0.01", "9999999")]
         public decimal Price { get; set; }
+
+        public string LightRequirement { get; set; } = "Indirect";
+        public string WateringRequirement { get; set; } = "Moderate";
+        public bool IsPetFriendly { get; set; }
     }
 
     public class CategoryDto
@@ -65,6 +73,10 @@ namespace carolijaAPI.Models
         public string? ProductDescription { get; set; }
         public decimal ProductPrice { get; set; }
         public bool Available { get; set; }
+        public string LightRequirement { get; set; } = string.Empty;
+        public string WateringRequirement { get; set; } = string.Empty;
+        public bool IsPetFriendly { get; set; }
+        public int StockQuantity { get; set; }
         public DateTime CreatedAt { get; set; }
         public ICollection<ProductImageDto> ProductImages { get; set; } = new List<ProductImageDto>();
     }
@@ -95,6 +107,24 @@ namespace carolijaAPI.Models
     {
         [Required, MaxLength(150)]
         public string CustomerName { get; set; } = string.Empty;
+
+        [Required, MaxLength(250)]
+        public string Address { get; set; } = string.Empty;
+
+        [Required, MaxLength(30)]
+        public string Phone { get; set; } = string.Empty;
+    }
+
+    public class OrderStatusRequest
+    {
+        [Required]
+        public string Status { get; set; } = string.Empty;
+    }
+
+    public class ProfileRequest
+    {
+        [Required, MaxLength(150)]
+        public string FullName { get; set; } = string.Empty;
 
         [Required, MaxLength(250)]
         public string Address { get; set; } = string.Empty;

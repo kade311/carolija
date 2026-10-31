@@ -5,5 +5,14 @@
     <article><span>Proizvodi</span><strong>{{ productCount }}</strong></article>
     <article><span>Kategorije</span><strong>{{ categoryCount }}</strong></article>
     <article><span>Dostupni proizvodi</span><strong>{{ availableCount }}</strong></article>
+    <article><span>Ukupan prihod</span><strong>{{ revenue | number:'1.2-2' }} KM</strong></article>
+    <article><span>Pending narudžbe</span><strong>{{ pendingOrders }}</strong></article>
   </div>
+  <section class="critical-stock">
+    <h2>Kritične zalihe</h2>
+    <p *ngIf="criticalStock.length === 0">Nema proizvoda s kritičnom zalihom.</p>
+    <div class="stock-row" *ngFor="let item of criticalStock">
+      <span>{{ item.productName }}</span><strong>{{ item.stockQuantity }} kom.</strong>
+    </div>
+  </section>
 </section>

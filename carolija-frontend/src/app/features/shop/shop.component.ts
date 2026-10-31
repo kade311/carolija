@@ -35,6 +35,9 @@ export class ShopComponent implements OnInit, AfterViewInit, OnDestroy {
     minPrice: null as number | null,
     maxPrice: null as number | null,
     sortBy: 'name_asc',
+    petFriendly: false,
+    lightRequirement: '',
+    wateringRequirement: '',
     pageNumber: 1,
     pageSize: 15
   };
@@ -165,6 +168,10 @@ export class ShopComponent implements OnInit, AfterViewInit, OnDestroy {
 
   getMainImage(product: Product): string {
     return product.productImages?.find(img => img.isMain)?.imageUrl || product.productImages?.[0]?.imageUrl || '';
+  }
+
+  isSoldOut(product: Product): boolean {
+    return product.stockQuantity === 0;
   }
 
   trackByProductId(_index: number, product: Product): number {
