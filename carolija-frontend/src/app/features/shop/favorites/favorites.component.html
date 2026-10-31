@@ -1,0 +1,11 @@
+<main class="favorites-page">
+  <h1>Favoriti</h1>
+  <div *ngIf="products.length === 0" class="state">Nemate sačuvanih favorita. <a routerLink="/shop">Pogledaj shop</a></div>
+  <div class="favorite-grid">
+    <a *ngFor="let product of products" [routerLink]="['/products', product.productId]" class="favorite-card">
+      <img [src]="product.productImages?.[0]?.imageUrl" [alt]="product.productName">
+      <strong>{{ product.productName }}</strong>
+      <span>{{ product.productPrice | number:'1.2-2' }} KM</span>
+    </a>
+  </div>
+</main>

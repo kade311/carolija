@@ -1,0 +1,5 @@
+.dashboard { padding: 24px; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 18px; }
+.stats article { display: grid; gap: 10px; padding: 22px; background: white; border-radius: 14px; box-shadow: 0 6px 20px rgba(0,0,0,.06); }
+.stats span { color: #666; }
+.stats strong { font-size: 2rem; color: #ff4081; }

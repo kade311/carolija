@@ -1,0 +1,15 @@
+<main class="checkout-page">
+  <a routerLink="/cart" class="back-link">← Nazad na košaricu</a>
+  <h1>Checkout</h1>
+  <form [formGroup]="form" (ngSubmit)="submit()" class="checkout-card">
+    <label>Ime i prezime <input formControlName="customerName"></label>
+    <small *ngIf="form.controls.customerName.touched && form.controls.customerName.invalid">Unesite ime i prezime.</small>
+    <label>Adresa dostave <textarea formControlName="address" rows="3"></textarea></label>
+    <small *ngIf="form.controls.address.touched && form.controls.address.invalid">Unesite adresu.</small>
+    <label>Telefon <input formControlName="phone" type="tel"></label>
+    <small *ngIf="form.controls.phone.touched && form.controls.phone.invalid">Unesite broj telefona.</small>
+    <div class="total">Ukupno: <strong>{{ total | number:'1.2-2' }} KM</strong></div>
+    <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+    <button type="submit" [disabled]="submitting">{{ submitting ? 'Kreiranje...' : 'Potvrdi narudžbu' }}</button>
+  </form>
+</main>

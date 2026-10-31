@@ -13,6 +13,7 @@
         <ul class="nav-links" [class.active]="isMenuOpen">
             <li><a routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}" (click)="isMenuOpen = false">Pocetna</a></li>
             <li><a routerLink="/shop" routerLinkActive="active-link" (click)="isMenuOpen = false">Shop</a></li>
+            <li><a routerLink="/cart" routerLinkActive="active-link" (click)="isMenuOpen = false">Košarica</a></li>
 
             <li *ngIf="authService.isAdmin()">
                 <a routerLink="/admin/dashboard" class="admin-link" (click)="isMenuOpen = false">
@@ -29,6 +30,8 @@
                 <li class="user-info">
                     <span>{{ authService.getUserEmail() }}</span>
                 </li>
+                <li><a routerLink="/orders" routerLinkActive="active-link" (click)="isMenuOpen = false">Moje narudžbe</a></li>
+                <li><a routerLink="/favorites" routerLinkActive="active-link" (click)="isMenuOpen = false">Favoriti</a></li>
                 <li>
                     <button (click)="openLogoutModal()" class="btn-logout">Odjavi se</button>
                 </li>

@@ -1,0 +1,42 @@
+<main class="details-page">
+  <a routerLink="/shop" class="back-link">← Nazad na shop</a>
+
+  <div *ngIf="loading" class="state-card">Učitavanje proizvoda...</div>
+  <div *ngIf="!loading && errorMessage" class="state-card error">{{ errorMessage }}</div>
+
+  <section *ngIf="!loading && product" class="product-details">
+    <div class="gallery">
+      <div class="main-image">
+        <img *ngIf="selectedImage; else noImage" [src]="selectedImage" [alt]="product.productName">
+        <ng-template #noImage><span>Slika nije dostupna</span></ng-template>
+      </div>
+      <div class="thumbnails" *ngIf="images.length > 1">
+        <button *ngFor="let image of images" type="button" [class.selected]="image.imageUrl === selectedImage"
+          (click)="selectImage(image)" [attr.aria-label]="'Prikaži sliku ' + product.productName">
+          <img [src]="image.imageUrl" [alt]="product.productName">
+        </button>
+      </div>
+    </div>
+
+    <div class="product-info">
+      <span class="eyebrow">Detalji proizvoda</span>
+      <h1>{{ product.productName }}</h1>
+      <p class="price">{{ product.productPrice | number:'1.2-2' }} KM</p>
+      <span class="availability" [class.unavailable]="!product.available">
+        {{ product.available ? 'Dostupno' : 'Trenutno nedostupno' }}
+      </span>
+      <div class="purchase" *ngIf="product.available">
+        <label>Količina <input type="number" min="1" max="100" [(ngModel)]="quantity"></label>
+        <button type="button" class="primary-button" (click)="addToCart()">Dodaj u košaricu</button>
+        <button type="button" class="favorite-button" (click)="toggleFavorite()">
+          {{ isFavorite ? '♥ Ukloni iz favorita' : '♡ Dodaj u favorite' }}
+        </button>
+      </div>
+      <p *ngIf="actionMessage" class="action-message">{{ actionMessage }}</p>
+      <div class="description">
+        <h2>Opis</h2>
+        <p>{{ product.productDescription || 'Opis ovog proizvoda trenutno nije dostupan.' }}</p>
+      </div>
+    </div>
+  </section>
+</main>

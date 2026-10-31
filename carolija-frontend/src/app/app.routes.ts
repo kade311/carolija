@@ -8,12 +8,22 @@ import { LoginComponent } from './features/auth/login/login.component';
 import { RegisterComponent } from './features/auth/register/register.component';
 import { adminGuard } from './core/guards/admin.guard';
 import { ShopComponent } from './features/shop/shop.component';
+import { ProductDetailsComponent } from './features/shop/product-details/product-details.component';
+import { CartComponent } from './features/shop/cart/cart.component';
+import { CheckoutComponent } from './features/shop/checkout/checkout.component';
+import { OrdersComponent } from './features/shop/orders/orders.component';
+import { FavoritesComponent } from './features/shop/favorites/favorites.component';
 
 export const routes: Routes = [
     {path: '', component: HomeComponent},
     {path: 'login', component:LoginComponent},
     {path: 'register', component:RegisterComponent},
     {path: 'shop', component:ShopComponent},
+    {path: 'products/:id', component: ProductDetailsComponent},
+    {path: 'cart', component: CartComponent},
+    {path: 'checkout', component: CheckoutComponent},
+    {path: 'orders', component: OrdersComponent},
+    {path: 'favorites', component: FavoritesComponent},
     {
         path:'admin',
         canActivate:[adminGuard],

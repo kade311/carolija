@@ -81,4 +81,25 @@ namespace carolijaAPI.Models
     {
         public string Url { get; set; } = string.Empty;
     }
+
+    public class CartItemRequest
+    {
+        [Range(1, int.MaxValue)]
+        public int ProductId { get; set; }
+
+        [Range(1, 100)]
+        public int Quantity { get; set; } = 1;
+    }
+
+    public class CheckoutRequest
+    {
+        [Required, MaxLength(150)]
+        public string CustomerName { get; set; } = string.Empty;
+
+        [Required, MaxLength(250)]
+        public string Address { get; set; } = string.Empty;
+
+        [Required, MaxLength(30)]
+        public string Phone { get; set; } = string.Empty;
+    }
 }

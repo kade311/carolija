@@ -1,0 +1,26 @@
+<main class="cart-page">
+  <h1>Košarica</h1>
+  <div *ngIf="loading" class="state">Učitavanje košarice...</div>
+  <div *ngIf="!loading && message" class="state error">{{ message }}</div>
+  <div *ngIf="!loading && cart && cart.items.length === 0" class="state">
+    Košarica je prazna. <a routerLink="/shop">Pogledaj proizvode</a>
+  </div>
+  <section *ngIf="cart && cart.items.length > 0" class="cart-layout">
+    <div class="items">
+      <article *ngFor="let item of cart.items" class="cart-item">
+        <img [src]="item.product.imageUrl || item.product.productImages?.[0]?.imageUrl" [alt]="item.product.productName">
+        <div class="item-info">
+          <a [routerLink]="['/products', item.productId]">{{ item.product.productName }}</a>
+          <strong>{{ item.product.productPrice | number:'1.2-2' }} KM</strong>
+          <label>Količina <input type="number" min="1" max="100" [value]="item.quantity" (change)="change(item, +$any($event.target).value)"></label>
+        </div>
+        <button type="button" class="remove" (click)="remove(item)">Ukloni</button>
+      </article>
+    </div>
+    <aside class="summary">
+      <h2>Ukupno</h2>
+      <strong>{{ cart.total | number:'1.2-2' }} KM</strong>
+      <a routerLink="/checkout" class="checkout-button">Nastavi na checkout</a>
+    </aside>
+  </section>
+</main>

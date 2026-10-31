@@ -1,0 +1,11 @@
+<main class="orders-page">
+  <h1>Moje narudžbe</h1>
+  <p class="success" *ngIf="createdMessage">{{ createdMessage }}</p>
+  <div *ngIf="orders.length === 0" class="state">Još nemate narudžbi. <a routerLink="/shop">Pogledaj shop</a></div>
+  <article *ngFor="let order of orders" class="order-card">
+    <div class="order-header"><strong>Narudžba #{{ order.orderId }}</strong><span>{{ order.status }}</span></div>
+    <small>{{ order.orderDate | date:'dd.MM.yyyy. HH:mm' }}</small>
+    <ul><li *ngFor="let item of order.items">{{ item.productName }} × {{ item.quantity }} — {{ item.price | number:'1.2-2' }} KM</li></ul>
+    <strong class="total">{{ order.totalAmount | number:'1.2-2' }} KM</strong>
+  </article>
+</main>

@@ -36,11 +36,14 @@
   </div>
 
   <div class="product-grid">
-    <mat-card class="product-card" *ngFor="let p of products; trackBy: trackByProductId">
+    <mat-card class="product-card" *ngFor="let p of products; trackBy: trackByProductId" [routerLink]="['/products', p.productId]">
       <img mat-card-image [src]="getMainImage(p)" [alt]="p.productName">
       <mat-card-content>
         <h3>{{ p.productName }}</h3>
         <p class="price">{{ p.productPrice }} KM</p>
+        <span class="availability" [class.unavailable]="!p.available">
+          {{ p.available ? 'Dostupno' : 'Nedostupno' }}
+        </span>
       </mat-card-content>
     </mat-card>
   </div>

@@ -11,11 +11,12 @@ import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-shop',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatCardModule, MatInputModule, MatSelectModule, MatFormFieldModule],
+  imports: [CommonModule, FormsModule, MatCardModule, MatInputModule, MatSelectModule, MatFormFieldModule, RouterModule],
   templateUrl: './shop.component.html',
   styleUrls: ['./shop.component.scss']
 })

@@ -14,6 +14,9 @@ namespace carolijaAPI.Models
         public DateTime OrderDate { get; set; } = DateTime.UtcNow;
         public decimal TotalAmount { get; set; }
         public string Status { get; set; } = "Pending";
+        public string CustomerName { get; set; } = string.Empty;
+        public string Address { get; set; } = string.Empty;
+        public string Phone { get; set; } = string.Empty;
         public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
     }
 }

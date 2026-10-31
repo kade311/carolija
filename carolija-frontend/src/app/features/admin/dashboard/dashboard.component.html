@@ -1,1 +1,9 @@
-<p>dashboard works!</p>
+<section class="dashboard">
+  <h1>Dashboard</h1>
+  <p *ngIf="loading">Učitavanje statistike...</p>
+  <div class="stats" *ngIf="!loading">
+    <article><span>Proizvodi</span><strong>{{ productCount }}</strong></article>
+    <article><span>Kategorije</span><strong>{{ categoryCount }}</strong></article>
+    <article><span>Dostupni proizvodi</span><strong>{{ availableCount }}</strong></article>
+  </div>
+</section>
