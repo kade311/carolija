@@ -17,6 +17,7 @@ export class AdminCategoriesComponent implements OnInit{
   modalType : 'delete' | 'restore' | 'permanent' = 'delete';
   selectedCategoryId:number|null=null;
   selectedCategoryName: string = '';
+  errorMessage = '';
 
   constructor(
     private categoryService: CategoryService,
@@ -59,12 +60,12 @@ export class AdminCategoriesComponent implements OnInit{
     if(this.modalType === 'permanent'){
       this.categoryService.permanentlyDeleteCategory(this.selectedCategoryId).subscribe({
         next: ()=> { this.loadCategories(); this.closeModal(); },
-        error: (err) => { console.error(err); this.closeModal(); }
+        error: (err) => { this.errorMessage = err.error?.message || 'Kategorija se ne može trajno obrisati.'; this.closeModal(); }
       });
     } else if(this.modalType === 'delete'){
       this.categoryService.softDeleteCategory(this.selectedCategoryId).subscribe({
         next: ()=> {this.loadCategories(); this.closeModal(); },
-        error: (err) => {console.error(err); this.closeModal(); }
+        error: (err) => {this.errorMessage = err.error?.message || 'Kategorija se ne može sakriti.'; this.closeModal(); }
       });
     }
     else{
@@ -74,7 +75,7 @@ export class AdminCategoriesComponent implements OnInit{
           if (cat) cat.isDeleted = false;
           this.closeModal();
         },
-        error: (err) => {console.error(err); this.closeModal(); }
+        error: (err) => {this.errorMessage = err.error?.message || 'Kategorija se ne može vratiti.'; this.closeModal(); }
       })
     }
   }

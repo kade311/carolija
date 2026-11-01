@@ -195,7 +195,12 @@ namespace carolijaAPI.Controllers
             });
             await _context.SaveChangesAsync();
 
-            return Ok(product);
+            return CreatedAtAction(nameof(GetProduct), new { id = product.ProductId }, MapProductDto(
+                await _context.Products
+                    .Include(item => item.Category)
+                    .Include(item => item.ProductImages)
+                    .Include(item => item.Inventories)
+                    .FirstAsync(item => item.ProductId == product.ProductId)));
         }
 
         [HttpPut("{id}")]

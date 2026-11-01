@@ -136,7 +136,14 @@ namespace carolijaAPI.Controllers
 
             _context.Categories.Add(category);
             await _context.SaveChangesAsync();
-            return Created();
+            return CreatedAtAction(nameof(GetCategory), new { id = category.CategoryID }, new CategoryDto
+            {
+                CategoryID = category.CategoryID,
+                CategoryName = category.CategoryName,
+                CategoryDescription = category.CategoryDescription,
+                ImageUrl = category.ImageUrl,
+                IsDeleted = category.IsDeleted
+            });
         }
 
         [HttpPut("{id}")]

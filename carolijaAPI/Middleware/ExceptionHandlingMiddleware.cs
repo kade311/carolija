@@ -28,7 +28,9 @@ namespace carolijaAPI.Middleware
 
                 var payload = JsonSerializer.Serialize(new
                 {
-                    error = "Internal server error"
+                    message = ex is InvalidOperationException
+                        ? ex.Message
+                        : "Greška na serveru. Pokušajte ponovo."
                 });
 
                 await context.Response.WriteAsync(payload);

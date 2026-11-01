@@ -32,12 +32,16 @@ namespace carolijaAPI.Services
             await file.CopyToAsync(ms);
             var fileBytes = ms.ToArray();
 
-            content.Add(new ByteArrayContent(fileBytes), "image", file.FileName);
+            var imageContent = new ByteArrayContent(fileBytes);
+            imageContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(
+                string.IsNullOrWhiteSpace(file.ContentType) ? "application/octet-stream" : file.ContentType);
+            content.Add(imageContent, "image", file.FileName);
 
             var response = await _httpClient.PostAsync($"https://api.imgbb.com/1/upload?key={apiKey}", content);
             if (!response.IsSuccessStatusCode)
             {
-                return null;
+                var errorBody = await response.Content.ReadAsStringAsync();
+                throw new InvalidOperationException($"ImgBB upload nije uspio ({(int)response.StatusCode}): {errorBody}");
             }
 
             var jsonResponse = await response.Content.ReadAsStringAsync();
@@ -48,7 +52,7 @@ namespace carolijaAPI.Services
 
             if (result?.Data is null || string.IsNullOrWhiteSpace(result.Data.Url))
             {
-                return null;
+                throw new InvalidOperationException("ImgBB nije vratio URL slike.");
             }
 
             return new ImgBbUploadResult

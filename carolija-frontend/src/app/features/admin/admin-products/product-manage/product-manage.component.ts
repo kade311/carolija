@@ -16,6 +16,7 @@ export class ProductManageComponent implements OnInit{
   isEditMode= false;
   productId: number | null = null;
   isSubmitting = false;
+  errorMessage = '';
   productData = {
     name: '',
     description: '',
@@ -63,6 +64,7 @@ export class ProductManageComponent implements OnInit{
     }
 
     this.isSubmitting = true;
+    this.errorMessage = '';
 
     if(this.isEditMode){
       this.productService.updateProduct(this.productId!, this.productData.name, this.productData.description, Number(this.productData.price), this.productData.lightRequirement, this.productData.wateringRequirement, this.productData.isPetFriendly, Number(this.productData.stockQuantity))
@@ -70,7 +72,9 @@ export class ProductManageComponent implements OnInit{
         next: () => {
           this.router.navigate(['/admin/products',this.categoryId]);
         },
-        error: (err) => console.error('Greska:', err)
+        error: (err) => {
+          this.errorMessage = err.error?.message || this.getValidationMessage(err) || 'Spremanje proizvoda nije uspjelo.';
+        }
       }).add(() => {
         this.isSubmitting = false;
       });
@@ -84,11 +88,23 @@ export class ProductManageComponent implements OnInit{
       this.productData.wateringRequirement,
       this.productData.isPetFriendly
       ,Number(this.productData.stockQuantity)
-    ).subscribe(() => this.router.navigate(['/admin/products', this.categoryId]))
+    ).subscribe({
+      next: () => this.router.navigate(['/admin/products', this.categoryId]),
+      error: (err) => {
+        this.errorMessage = err.error?.message || this.getValidationMessage(err) || 'Dodavanje proizvoda nije uspjelo.';
+      }
+    })
     .add(() => {
       this.isSubmitting = false;
     });
     }
+
+  }
+
+  private getValidationMessage(error: any): string {
+    const errors = error?.error?.errors;
+    if (!errors) return '';
+    return Object.values(errors).flat().join(' ');
   }
 
   loadProductData(id: number){

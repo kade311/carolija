@@ -2,6 +2,7 @@
     <div class="header">
         <h2>{{ isEditMode ? 'Izmijeni proizvod' : 'Dodaj novi proizvod' }}</h2>
         <p *ngIf="!isEditMode">Kategorija ID: <strong>{{ categoryId }}</strong></p>
+        <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
     </div>
 
     <div class="form-group">

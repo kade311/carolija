@@ -1,6 +1,7 @@
 <div class="admin-container">
     <div class="header">
         <h2>Upravljanje kategorijama</h2>
+        <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
         <button class="add-btn" [routerLink]="['/admin/categories/manage']">Dodaj novu kategoriju</button>
     </div>
 
