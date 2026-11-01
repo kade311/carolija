@@ -181,26 +181,22 @@ namespace carolijaAPI.Controllers
                 WateringRequirement = request.WateringRequirement.Trim(),
                 IsPetFriendly = request.IsPetFriendly,
                 CreatedAt = DateTime.UtcNow,
-                Available = true,
-                ProductImages = new List<ProductImage>()
+                Available = request.StockQuantity > 0,
+                ProductImages = new List<ProductImage>(),
+                Inventories = new List<Inventory>
+                {
+                    new()
+                    {
+                        StockQuantity = request.StockQuantity,
+                        LastUpdated = DateTime.UtcNow
+                    }
+                }
             };
 
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
-            _context.Inventories.Add(new Inventory
-            {
-                ProductID = product.ProductId,
-                StockQuantity = request.StockQuantity,
-                LastUpdated = DateTime.UtcNow
-            });
-            await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetProduct), new { id = product.ProductId }, MapProductDto(
-                await _context.Products
-                    .Include(item => item.Category)
-                    .Include(item => item.ProductImages)
-                    .Include(item => item.Inventories)
-                    .FirstAsync(item => item.ProductId == product.ProductId)));
+            return CreatedAtAction(nameof(GetProduct), new { id = product.ProductId }, MapProductDto(product));
         }
 
         [HttpPut("{id}")]
@@ -239,6 +235,7 @@ namespace carolijaAPI.Controllers
                 inventory.StockQuantity = request.StockQuantity;
                 inventory.LastUpdated = DateTime.UtcNow;
             }
+            product.Available = request.StockQuantity > 0;
 
             await _context.SaveChangesAsync();
             return Ok(product);
