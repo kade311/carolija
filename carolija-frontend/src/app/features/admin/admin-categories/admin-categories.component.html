@@ -18,7 +18,10 @@
 
                 <button class="delete-btn" *ngIf="!cat.isDeleted" 
                     (click)="$event.stopPropagation(); openModal(cat, 'delete')">
-                    Obrisi
+                    Sakrij
+                </button>
+                <button class="delete-btn" (click)="$event.stopPropagation(); openModal(cat, 'permanent')">
+                    Obriši trajno
                 </button>
 
                 <button class="restore-btn" *ngIf="cat.isDeleted" 
@@ -31,15 +34,15 @@
 
     <div class="modal-overlay" *ngIf="showModal">
         <div class="modal-card">
-            <h3>{{ modalType === 'delete' ? 'Potvrda brisanja' : 'Potvrda vracanja' }}</h3>
+            <h3>{{ modalType === 'restore' ? 'Potvrda vraćanja' : modalType === 'permanent' ? 'Trajno brisanje' : 'Potvrda skrivanja' }}</h3>
             <p>
-                Jeste li sigurni da zelite {{ modalType === 'delete' ? 'obrisati' : 'vratiti' }}
+                Jeste li sigurni da želite {{ modalType === 'restore' ? 'vratiti' : modalType === 'permanent' ? 'trajno obrisati' : 'sakriti' }}
                 kategoriju <strong>{{ selectedCategoryName }}</strong>?
             </p>
 
             <div class="modal-actions">
                 <button class="btn-cancel" (click)="closeModal()">Odustani</button>
-                <button [className]="modalType === 'delete' ? 'btn-confirm' : 'btn-restore-confirm'" 
+                <button [className]="modalType === 'restore' ? 'btn-restore-confirm' : 'btn-confirm'"
                         (click)="categoryDeleteOrRestore()">
                     Potvrdi
                 </button>

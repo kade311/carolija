@@ -22,11 +22,6 @@
         </select>
     </div>
 
-    <label class="pet-friendly">
-        <input type="checkbox" name="isPetFriendly" [(ngModel)]="productData.isPetFriendly">
-        Pet-friendly biljka
-    </label>
-
     <form (ngSubmit)="onSubmit()" #productForm="ngForm" class="styled-form">
         <div class="form-group">
             <label for="name">Naziv proizvoda</label>
@@ -48,6 +43,12 @@
                 [(ngModel)]="productData.price" 
                 required 
                 placeholder="0.00">
+        </div>
+
+        <div class="form-group">
+            <label for="stockQuantity">Količina na stanju</label>
+            <input type="number" min="0" id="stockQuantity" name="stockQuantity" [(ngModel)]="productData.stockQuantity" required>
+            <small>Unesite 0 ako proizvod trenutno nije na stanju.</small>
         </div>
 
         <div class="form-group">

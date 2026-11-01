@@ -44,9 +44,9 @@ namespace carolijaAPI.Controllers
 
         [HttpPost("{productId}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UploadImage(int productId, IFormFile image)
+        public async Task<IActionResult> UploadImage(int productId, [FromForm] IFormFile? image)
         {
-            var productExists = await _context.Products.AnyAsync(p => p.ProductId == productId && p.Available && !p.Category.IsDeleted);
+            var productExists = await _context.Products.AnyAsync(p => p.ProductId == productId && !p.Category.IsDeleted);
             if (!productExists)
             {
                 return BadRequest(new { message = "Proizvod nije pronađen ili nije dostupan." });
@@ -58,10 +58,10 @@ namespace carolijaAPI.Controllers
                 return BadRequest(new { message = validationError });
             }
 
-            var result = await _imgBBService.UploadImageAsync(image);
+            var result = await _imgBBService.UploadImageAsync(image!);
             if (result is null)
             {
-                return BadRequest(new { message = "Upload slike nije uspio." });
+                return BadRequest(new { message = "Upload slike nije uspio. Provjerite ImgBB API ključ na serveru." });
             }
 
             var productImage = new ProductImage

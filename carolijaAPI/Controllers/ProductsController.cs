@@ -187,6 +187,13 @@ namespace carolijaAPI.Controllers
 
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
+            _context.Inventories.Add(new Inventory
+            {
+                ProductID = product.ProductId,
+                StockQuantity = request.StockQuantity,
+                LastUpdated = DateTime.UtcNow
+            });
+            await _context.SaveChangesAsync();
 
             return Ok(product);
         }
@@ -212,6 +219,21 @@ namespace carolijaAPI.Controllers
             product.LightRequirement = request.LightRequirement.Trim();
             product.WateringRequirement = request.WateringRequirement.Trim();
             product.IsPetFriendly = request.IsPetFriendly;
+            var inventory = await _context.Inventories.FirstOrDefaultAsync(item => item.ProductID == id);
+            if (inventory is null)
+            {
+                _context.Inventories.Add(new Inventory
+                {
+                    ProductID = id,
+                    StockQuantity = request.StockQuantity,
+                    LastUpdated = DateTime.UtcNow
+                });
+            }
+            else
+            {
+                inventory.StockQuantity = request.StockQuantity;
+                inventory.LastUpdated = DateTime.UtcNow;
+            }
 
             await _context.SaveChangesAsync();
             return Ok(product);
@@ -253,6 +275,52 @@ namespace carolijaAPI.Controllers
             product.Available = false;
             await _context.SaveChangesAsync();
             return Ok();
+        }
+
+        [HttpPut("{id}/stock")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateStock(int id, [FromBody] StockRequest request)
+        {
+            if (!ModelState.IsValid) return ValidationProblem(ModelState);
+            var productExists = await _context.Products.AnyAsync(product => product.ProductId == id);
+            if (!productExists) return NotFound();
+
+            var inventory = await _context.Inventories.FirstOrDefaultAsync(item => item.ProductID == id);
+            if (inventory is null)
+            {
+                inventory = new Inventory { ProductID = id };
+                _context.Inventories.Add(inventory);
+            }
+
+            inventory.StockQuantity = request.StockQuantity;
+            inventory.LastUpdated = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+            return Ok(new { productId = id, stockQuantity = inventory.StockQuantity });
+        }
+
+        [HttpDelete("{id}/permanent")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> PermanentlyDeleteProduct(int id)
+        {
+            var product = await _context.Products
+                .Include(item => item.ProductImages)
+                .Include(item => item.Inventories)
+                .FirstOrDefaultAsync(item => item.ProductId == id);
+            if (product is null) return NotFound();
+
+            var hasOrders = await _context.OrderItems.AnyAsync(item => item.ProductID == id);
+            if (hasOrders)
+            {
+                return Conflict(new { message = "Proizvod se ne može trajno obrisati jer postoji u narudžbama." });
+            }
+
+            _context.Favorites.RemoveRange(_context.Favorites.Where(item => item.ProductID == id));
+            _context.CartItems.RemoveRange(_context.CartItems.Where(item => item.ProductID == id));
+            _context.ProductImages.RemoveRange(product.ProductImages);
+            _context.Inventories.RemoveRange(product.Inventories);
+            _context.Products.Remove(product);
+            await _context.SaveChangesAsync();
+            return NoContent();
         }
 
         private IQueryable<Product> BuildPublicProductsQuery()
@@ -341,7 +409,7 @@ namespace carolijaAPI.Controllers
                 LightRequirement = string.IsNullOrWhiteSpace(p.LightRequirement) ? "Indirect" : p.LightRequirement,
                 WateringRequirement = string.IsNullOrWhiteSpace(p.WateringRequirement) ? "Moderate" : p.WateringRequirement,
                 IsPetFriendly = p.IsPetFriendly,
-                StockQuantity = p.Inventories.FirstOrDefault()?.StockQuantity ?? 999,
+                StockQuantity = p.Inventories.FirstOrDefault()?.StockQuantity ?? 0,
                 CreatedAt = p.CreatedAt,
                 ProductImages = p.ProductImages
                     .OrderByDescending(img => img.isMain)

@@ -21,6 +21,7 @@ export class ProductImagesComponent implements OnInit{
   selectedImageId: number | null = null;
   uploadProgress: number = 0;
   isUploading: boolean = false;
+  errorMessage = '';
 
   constructor(
     private router : Router,
@@ -61,6 +62,7 @@ export class ProductImagesComponent implements OnInit{
 
       this.isUploading = true;
       this.uploadProgress = 0;
+      this.errorMessage = '';
 
       this.imageService.uploadImage(this.productId, file).subscribe({
         next: (httpEvent: any) => {
@@ -73,7 +75,11 @@ export class ProductImagesComponent implements OnInit{
             event.target.value = '';
           }
         },
-        error: (err) => {this.isUploading = false; console.error(err);}
+        error: (err) => {
+          this.isUploading = false;
+          this.errorMessage = err.error?.message || 'Upload slike nije uspio.';
+          event.target.value = '';
+        }
       })
     }
   }

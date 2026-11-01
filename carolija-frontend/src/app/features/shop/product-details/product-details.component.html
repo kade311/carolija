@@ -28,7 +28,6 @@
       <div class="plant-badges">
         <span>☀ {{ product.lightRequirement }}</span>
         <span>💧 {{ product.wateringRequirement }}</span>
-        <span *ngIf="product.isPetFriendly">🐾 Pet-friendly</span>
       </div>
       <div class="purchase" *ngIf="product.available && !isSoldOut()">
         <label>Količina <input type="number" min="1" max="100" [(ngModel)]="quantity"></label>

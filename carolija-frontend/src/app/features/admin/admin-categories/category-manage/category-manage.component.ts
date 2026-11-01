@@ -18,6 +18,7 @@ export class CategoryManageComponent implements OnInit{
   selectedFile: File | null = null;
   imagePreview: string | null = null;
   isSubmitting = false;
+  errorMessage = '';
 
   categoryData = {
     name:'',
@@ -70,6 +71,7 @@ export class CategoryManageComponent implements OnInit{
     }
 
     this.isSubmitting = true;
+    this.errorMessage = '';
 
     if(this.isEditMode){
       this.categoryService.updateCategory(this.categoryId!, this.categoryData.name, this.categoryData.description, this.selectedFile)
@@ -77,13 +79,16 @@ export class CategoryManageComponent implements OnInit{
         next: () => {
           this.router.navigate(['/admin/categories']);
         },
-        error: (err) => console.error('Greska: ',err)
+        error: (err) => { this.errorMessage = err.error?.message || 'Spremanje kategorije nije uspjelo.'; }
       }).add(() => {
         this.isSubmitting = false;
       });
     }else{
       this.categoryService.addCategory(this.categoryData.name,this.categoryData.description, this.selectedFile)
-      .subscribe(() => this.router.navigate(['/admin/categories']))
+      .subscribe({
+        next: () => this.router.navigate(['/admin/categories']),
+        error: (err) => { this.errorMessage = err.error?.message || 'Dodavanje kategorije nije uspjelo.'; }
+      })
       .add(() => {
         this.isSubmitting = false;
       });

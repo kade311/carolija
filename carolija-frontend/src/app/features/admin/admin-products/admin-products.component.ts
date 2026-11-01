@@ -19,7 +19,7 @@ export class AdminProductsComponent implements OnInit, OnDestroy{
   categoryId!: number;
   categoryName: string = '';
   showModal: boolean = false;
-  modalType : 'delete' | 'restore' = 'delete';
+  modalType : 'delete' | 'restore' | 'permanent' = 'delete';
   selectedProductId:number|null=null;
   selectedProductName: string = '';
   private searchSubject = new Subject<string>();
@@ -85,7 +85,7 @@ export class AdminProductsComponent implements OnInit, OnDestroy{
     return mainImage?.imageUrl || null;
   }
 
-  openModal(prod: Product, type: 'delete'|'restore'){
+  openModal(prod: Product, type: 'delete'|'restore'|'permanent'){
       this.selectedProductId = prod.productId;
       this.selectedProductName = prod.productName;
       this.modalType = type;
@@ -101,12 +101,18 @@ export class AdminProductsComponent implements OnInit, OnDestroy{
   productDeleteOrRestore(){
     if(!this.selectedProductId) return;
 
-    if(this.modalType === 'delete'){
+    if(this.modalType === 'permanent'){
+      this.productService.permanentlyDeleteProduct(this.selectedProductId).subscribe({
+        next: ()=> {this.loadProducts(this.currentSearch); this.closeModal(); },
+        error: (err) => {console.error(err); this.closeModal(); }
+      });
+    } else if(this.modalType === 'delete'){
       this.productService.deleteProduct(this.selectedProductId).subscribe({
         next: ()=> {this.loadProducts(this.currentSearch); this.closeModal(); },
         error: (err) => {console.error(err); this.closeModal(); }
       });
     }
+
     else{
       this.productService.restoreProduct(this.selectedProductId).subscribe({
         next: () => {
@@ -116,6 +122,18 @@ export class AdminProductsComponent implements OnInit, OnDestroy{
         error: (err) => {console.error(err); this.closeModal(); }
       })
     }
+  }
+
+  updateStock(product: Product, value: string): void {
+    const quantity = Math.max(0, Number(value));
+    if (!Number.isInteger(quantity)) return;
+    this.productService.updateStock(product.productId, quantity).subscribe({
+      next: result => {
+        product.stockQuantity = result.stockQuantity;
+        product.available = result.stockQuantity > 0;
+      },
+      error: err => console.error('Greska pri spremanju zalihe', err)
+    });
   }
 
   loadCategoryName(){

@@ -53,8 +53,13 @@
             <div class="col-actions">
                 <button class="edit-btn" (click)="$event.stopPropagation(); editProduct(p.productId)">Uredi</button>
                 
+                <label class="stock-editor" (click)="$event.stopPropagation()">
+                    Zaliha
+                    <input type="number" min="0" [value]="p.stockQuantity" (change)="updateStock(p, $any($event.target).value)">
+                </label>
                 <button class="delete-btn" *ngIf="p.available" 
                     (click)="$event.stopPropagation(); openModal(p, 'delete')">Obrisi</button>
+                <button class="delete-btn" (click)="$event.stopPropagation(); openModal(p, 'permanent')">Obriši trajno</button>
                 
                 <button class="restore-btn" *ngIf="!p.available" 
                     (click)="$event.stopPropagation(); openModal(p, 'restore')">Vrati</button>
@@ -70,9 +75,9 @@
 
     <div class="modal-overlay" *ngIf="showModal">
         <div class="modal-card">
-            <h3>{{ modalType === 'delete' ? 'Potvrda brisanja' : 'Vrati proizvod' }}</h3>
+            <h3>{{ modalType === 'restore' ? 'Vrati proizvod' : modalType === 'permanent' ? 'Trajno brisanje' : 'Sakrij proizvod' }}</h3>
             <p>
-                Jeste li sigurni da zelite {{ modalType === 'delete' ? 'obrisati' : 'vratiti' }} 
+                Jeste li sigurni da želite {{ modalType === 'restore' ? 'vratiti' : modalType === 'permanent' ? 'trajno obrisati' : 'sakriti' }}
                 proizvod <strong>{{ selectedProductName }}</strong>?
             </p>
             

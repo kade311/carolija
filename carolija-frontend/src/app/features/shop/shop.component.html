@@ -1,9 +1,5 @@
 <div class="shop-container">
   <div class="filter-bar">
-    <label class="quick-filter">
-      <input type="checkbox" [(ngModel)]="filters.petFriendly" (change)="onFilterChange()">
-      Pet-friendly
-    </label>
     <mat-form-field appearance="outline">
       <mat-label>Svjetlost</mat-label>
       <mat-select [(ngModel)]="filters.lightRequirement" (selectionChange)="onFilterChange()">
@@ -67,7 +63,6 @@
           {{ p.available && !isSoldOut(p) ? 'Dostupno' : 'Rasprodano' }}
         </span>
         <div class="plant-badges">
-          <span *ngIf="p.isPetFriendly">🐾 Pet-friendly</span>
           <span>☀ {{ p.lightRequirement }}</span>
           <span>💧 {{ p.wateringRequirement }}</span>
         </div>

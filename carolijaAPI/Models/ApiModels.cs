@@ -30,6 +30,8 @@ namespace carolijaAPI.Models
         public string LightRequirement { get; set; } = "Indirect";
         public string WateringRequirement { get; set; } = "Moderate";
         public bool IsPetFriendly { get; set; }
+        [Range(0, int.MaxValue)]
+        public int StockQuantity { get; set; }
     }
 
     public class UpdateProductRequest
@@ -47,6 +49,8 @@ namespace carolijaAPI.Models
         public string LightRequirement { get; set; } = "Indirect";
         public string WateringRequirement { get; set; } = "Moderate";
         public bool IsPetFriendly { get; set; }
+        [Range(0, int.MaxValue)]
+        public int StockQuantity { get; set; }
     }
 
     public class CategoryDto
@@ -131,5 +135,11 @@ namespace carolijaAPI.Models
 
         [Required, MaxLength(30)]
         public string Phone { get; set; } = string.Empty;
+    }
+
+    public class StockRequest
+    {
+        [Range(0, int.MaxValue)]
+        public int StockQuantity { get; set; }
     }
 }

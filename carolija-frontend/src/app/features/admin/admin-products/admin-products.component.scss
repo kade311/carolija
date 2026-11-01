@@ -277,3 +277,5 @@
       }
     }
   }
+.stock-editor { display: grid; gap: 3px; font-size: .75rem; color: #555; }
+.stock-editor input { width: 58px; padding: 5px; border: 1px solid #ddd; border-radius: 6px; }

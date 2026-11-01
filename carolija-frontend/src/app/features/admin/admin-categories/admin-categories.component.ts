@@ -14,7 +14,7 @@ import { Router } from '@angular/router';
 export class AdminCategoriesComponent implements OnInit{
   categories: Category[] = [];
   showModal: boolean = false;
-  modalType : 'delete' | 'restore' = 'delete';
+  modalType : 'delete' | 'restore' | 'permanent' = 'delete';
   selectedCategoryId:number|null=null;
   selectedCategoryName: string = '';
 
@@ -40,7 +40,7 @@ export class AdminCategoriesComponent implements OnInit{
     this.router.navigate(['/admin/categories/manage',id]);
   };
 
-  openModal(cat: Category, type: 'delete'|'restore'){
+  openModal(cat: Category, type: 'delete'|'restore'|'permanent'){
     this.selectedCategoryId = cat.categoryID;
     this.selectedCategoryName = cat.categoryName;
     this.modalType = type;
@@ -56,7 +56,12 @@ export class AdminCategoriesComponent implements OnInit{
   categoryDeleteOrRestore(){
     if(!this.selectedCategoryId) return;
 
-    if(this.modalType === 'delete'){
+    if(this.modalType === 'permanent'){
+      this.categoryService.permanentlyDeleteCategory(this.selectedCategoryId).subscribe({
+        next: ()=> { this.loadCategories(); this.closeModal(); },
+        error: (err) => { console.error(err); this.closeModal(); }
+      });
+    } else if(this.modalType === 'delete'){
       this.categoryService.softDeleteCategory(this.selectedCategoryId).subscribe({
         next: ()=> {this.loadCategories(); this.closeModal(); },
         error: (err) => {console.error(err); this.closeModal(); }

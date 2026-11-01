@@ -123,10 +123,8 @@ namespace carolijaAPI.Controllers
             if (image is not null)
             {
                 var result = await _imgBBService.UploadImageAsync(image);
-                if (result is not null)
-                {
-                    url = result.Url;
-                }
+                if (result is null) return BadRequest(new { message = "Upload slike kategorije nije uspio." });
+                url = result.Url;
             }
 
             var category = new Category
@@ -171,10 +169,8 @@ namespace carolijaAPI.Controllers
             if (image is not null && image.Length > 0)
             {
                 var result = await _imgBBService.UploadImageAsync(image);
-                if (result is not null)
-                {
-                    category.ImageUrl = result.Url;
-                }
+                if (result is null) return BadRequest(new { message = "Upload slike kategorije nije uspio." });
+                category.ImageUrl = result.Url;
             }
 
             _context.Entry(category).State = EntityState.Modified;
@@ -218,6 +214,32 @@ namespace carolijaAPI.Controllers
 
             await _context.SaveChangesAsync();
             return Ok(category);
+        }
+
+        [HttpDelete("{id}/permanent")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> PermanentlyDeleteCategory(int id)
+        {
+            var category = await _context.Categories
+                .Include(item => item.Products)
+                .FirstOrDefaultAsync(item => item.CategoryID == id);
+            if (category is null) return NotFound();
+
+            var productIds = category.Products?.Select(product => product.ProductId).ToList() ?? [];
+            var hasOrders = await _context.OrderItems.AnyAsync(item => productIds.Contains(item.ProductID));
+            if (hasOrders)
+            {
+                return Conflict(new { message = "Kategorija se ne može trajno obrisati jer njeni proizvodi postoje u narudžbama." });
+            }
+
+            _context.CartItems.RemoveRange(_context.CartItems.Where(item => productIds.Contains(item.ProductID)));
+            _context.Favorites.RemoveRange(_context.Favorites.Where(item => productIds.Contains(item.ProductID)));
+            _context.ProductImages.RemoveRange(_context.ProductImages.Where(item => productIds.Contains(item.ProductID)));
+            _context.Inventories.RemoveRange(_context.Inventories.Where(item => productIds.Contains(item.ProductID)));
+            _context.Products.RemoveRange(category.Products ?? []);
+            _context.Categories.Remove(category);
+            await _context.SaveChangesAsync();
+            return NoContent();
         }
     }
 }

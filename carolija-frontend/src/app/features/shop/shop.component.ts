@@ -35,7 +35,6 @@ export class ShopComponent implements OnInit, AfterViewInit, OnDestroy {
     minPrice: null as number | null,
     maxPrice: null as number | null,
     sortBy: 'name_asc',
-    petFriendly: false,
     lightRequirement: '',
     wateringRequirement: '',
     pageNumber: 1,

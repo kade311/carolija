@@ -23,6 +23,7 @@ export class ProductManageComponent implements OnInit{
     lightRequirement: 'Indirect',
     wateringRequirement: 'Moderate',
     isPetFriendly: false
+    ,stockQuantity: 0
   };
 
   constructor(
@@ -64,7 +65,7 @@ export class ProductManageComponent implements OnInit{
     this.isSubmitting = true;
 
     if(this.isEditMode){
-      this.productService.updateProduct(this.productId!, this.productData.name, this.productData.description, Number(this.productData.price), this.productData.lightRequirement, this.productData.wateringRequirement, this.productData.isPetFriendly)
+      this.productService.updateProduct(this.productId!, this.productData.name, this.productData.description, Number(this.productData.price), this.productData.lightRequirement, this.productData.wateringRequirement, this.productData.isPetFriendly, Number(this.productData.stockQuantity))
       .subscribe({
         next: () => {
           this.router.navigate(['/admin/products',this.categoryId]);
@@ -82,6 +83,7 @@ export class ProductManageComponent implements OnInit{
       this.productData.lightRequirement,
       this.productData.wateringRequirement,
       this.productData.isPetFriendly
+      ,Number(this.productData.stockQuantity)
     ).subscribe(() => this.router.navigate(['/admin/products', this.categoryId]))
     .add(() => {
       this.isSubmitting = false;
@@ -99,6 +101,7 @@ export class ProductManageComponent implements OnInit{
         this.productData.lightRequirement = data.lightRequirement || 'Indirect';
         this.productData.wateringRequirement = data.wateringRequirement || 'Moderate';
         this.productData.isPetFriendly = data.isPetFriendly;
+        this.productData.stockQuantity = data.stockQuantity || 0;
       }
     )
   }

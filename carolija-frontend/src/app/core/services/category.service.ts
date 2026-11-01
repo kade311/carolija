@@ -53,6 +53,10 @@ export class CategoryService{
         return this.http.delete<Category>(`${this.apiUrl}/${id}`);
     }
 
+    permanentlyDeleteCategory(id: number): Observable<void> {
+        return this.http.delete<void>(`${this.apiUrl}/${id}/permanent`);
+    }
+
     restoreCategory(id: number) : Observable<Category>{
         return this.http.put<Category>(`${this.apiUrl}/restore/${id}`, {});
     }

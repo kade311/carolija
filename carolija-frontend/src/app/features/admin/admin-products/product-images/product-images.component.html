@@ -13,6 +13,7 @@
   </div>
 
   <hr>
+  <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
 
   <div class="image-grid" *ngIf="images.length > 0">
     <div *ngFor="let img of images" class="image-card" [class.is-main]="img.isMain">
