@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Product } from '../../../core/models/product.model';
 import { Router } from '@angular/router';
@@ -9,9 +9,10 @@ import { Router } from '@angular/router';
   templateUrl: './carousel.component.html',
   styleUrl: './carousel.component.scss'
 })
-export class CarouselComponent implements OnInit {
+export class CarouselComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() items: Product[] = [];
   @ViewChild('track') track?: ElementRef<HTMLDivElement>;
+  private rotationTimer?: ReturnType<typeof setInterval>;
 
   constructor(private router: Router){}
 
@@ -21,8 +22,29 @@ export class CarouselComponent implements OnInit {
       }
   }
 
+  ngAfterViewInit(): void {
+    this.rotationTimer = setInterval(() => this.scroll(1), 3500);
+  }
+
+  ngOnDestroy(): void {
+    if (this.rotationTimer) {
+      clearInterval(this.rotationTimer);
+    }
+  }
+
   scroll(direction: number): void {
-    this.track?.nativeElement.scrollBy({ left: direction * 310, behavior: 'smooth' });
+    const element = this.track?.nativeElement;
+    if (!element) {
+      return;
+    }
+
+    const nextPosition = element.scrollLeft + direction * 310;
+    if (direction > 0 && nextPosition + element.clientWidth >= element.scrollWidth - 8) {
+      element.scrollTo({ left: 0, behavior: 'smooth' });
+      return;
+    }
+
+    element.scrollBy({ left: direction * 310, behavior: 'smooth' });
   }
 
   openProduct(product: Product): void {
